@@ -3,7 +3,10 @@ module github.com/dung28-td/dbplay
 go 1.18
 
 require (
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.13.0 // indirect
+	github.com/go-redis/redis/v9 v9.0.0-beta.1 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/graphql-go/graphql v0.8.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect

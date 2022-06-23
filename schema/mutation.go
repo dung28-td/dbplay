@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"github.com/dung28-td/dbplay/client"
 	"github.com/dung28-td/dbplay/db"
 	"github.com/dung28-td/dbplay/db/models"
 	"github.com/dung28-td/dbplay/schema/inputs"
@@ -19,6 +20,15 @@ var createConnection = graphql.Field{
 		var input inputs.CreateConnectionInput
 		if err := x.Bind(p.Args["input"], &input); err != nil {
 			return nil, err
+		}
+
+		if c, err := client.NewClient(input.DSN); err != nil {
+			return nil, err
+		} else {
+			if err = c.TestConnection(p.Context); err != nil {
+				return nil, err
+			}
+			defer c.Close()
 		}
 
 		connection := models.Connection{
