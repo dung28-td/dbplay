@@ -29,7 +29,6 @@ var createConnection = graphql.Field{
 			if err = c.TestConnection(p.Context); err != nil {
 				return nil, err
 			}
-			defer c.Close()
 		}
 
 		bc := models.Connection{
