@@ -3,18 +3,24 @@ package schema
 import (
 	"github.com/dung28-td/dbplay/db"
 	"github.com/dung28-td/dbplay/db/models"
+	"github.com/dung28-td/dbplay/schema/types"
 	"github.com/graphql-go/graphql"
 )
 
 var connections = graphql.Field{
-	Type: graphql.NewList(connectionType),
+	Type: graphql.NewList(types.ConnectionType),
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-		var connections []models.Connection
+		var bunConnections []models.Connection
 
 		if err := db.DB.NewSelect().
-			Model(&connections).
+			Model(&bunConnections).
 			Scan(p.Context); err != nil {
 			return nil, err
+		}
+		var connections []types.Connection
+
+		for _, bc := range bunConnections {
+			connections = append(connections, types.ConvertBunModelToConnection(&bc))
 		}
 
 		return connections, nil

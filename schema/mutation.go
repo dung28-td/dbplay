@@ -5,12 +5,13 @@ import (
 	"github.com/dung28-td/dbplay/db"
 	"github.com/dung28-td/dbplay/db/models"
 	"github.com/dung28-td/dbplay/schema/inputs"
+	"github.com/dung28-td/dbplay/schema/types"
 	"github.com/dung28-td/dbplay/x"
 	"github.com/graphql-go/graphql"
 )
 
 var createConnection = graphql.Field{
-	Type: connectionType,
+	Type: types.ConnectionType,
 	Args: graphql.FieldConfigArgument{
 		"input": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(inputs.CreateConnectionInputObject),
@@ -31,16 +32,23 @@ var createConnection = graphql.Field{
 			defer c.Close()
 		}
 
-		connection := models.Connection{
+		bc := models.Connection{
 			Name: input.Name,
 			DSN:  input.DSN,
 		}
 
 		_, err := db.DB.NewInsert().
-			Model(&connection).
+			Model(&bc).
 			Exec(p.Context)
 
-		return connection, err
+		return types.ConvertBunModelToConnection(&bc), err
+	},
+}
+
+var connect = graphql.Field{
+	Type: types.ConnectionType,
+	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+		return nil, nil
 	},
 }
 
@@ -48,5 +56,6 @@ var mutation = graphql.NewObject(graphql.ObjectConfig{
 	Name: "RootMutation",
 	Fields: graphql.Fields{
 		"createConnection": &createConnection,
+		"connect":          &connect,
 	},
 })

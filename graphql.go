@@ -1,13 +1,22 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
+	"github.com/dung28-td/dbplay/db"
+	"github.com/dung28-td/dbplay/db/models"
 	"github.com/dung28-td/dbplay/schema"
+	"github.com/dung28-td/dbplay/schema/types"
 	"github.com/graphql-go/graphql"
 )
+
+type ContextKey string
+
+const clientKey ContextKey = "client"
 
 type graphqlBody struct {
 	Query         string         `json:"query"`
@@ -23,13 +32,26 @@ func graphqlHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var c types.Connection
+	if connectionId, err := strconv.ParseInt(r.Header.Get("X-Connection-ID"), 10, 64); err == nil {
+		v := new(models.Connection)
+		if err := db.DB.NewSelect().
+			Model(v).
+			Where("id = ?", connectionId).
+			Scan(r.Context()); err == nil {
+			c = types.ConvertBunModelToConnection(v)
+		}
+	}
+
 	result := graphql.Do(graphql.Params{
-		Context:        r.Context(),
+		Context:        context.WithValue(r.Context(), clientKey, c),
 		Schema:         schema.Schema,
 		RequestString:  body.Query,
 		OperationName:  body.OperationName,
 		VariableValues: body.Variables,
 	})
+
+	w.Header().Set("Content-Type", "application/json")
 
 	if err := json.NewEncoder(w).Encode(result); err != nil {
 		fmt.Printf("Could not write result to response: %s", err)

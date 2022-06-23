@@ -6,6 +6,8 @@ import (
 	"net/url"
 )
 
+var Clients map[string]Client
+
 type Client interface {
 	TestConnection(ctx context.Context) error
 	Close() error
