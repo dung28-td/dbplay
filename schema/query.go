@@ -1,35 +1,14 @@
 package schema
 
 import (
-	"github.com/dung28-td/dbplay/db"
-	"github.com/dung28-td/dbplay/db/models"
-	"github.com/dung28-td/dbplay/schema/types"
+	"github.com/dung28-td/dbplay/schema/queries"
 	"github.com/graphql-go/graphql"
 )
-
-var connections = graphql.Field{
-	Type: graphql.NewList(types.ConnectionType),
-	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-		var bunConnections []models.Connection
-
-		if err := db.DB.NewSelect().
-			Model(&bunConnections).
-			Scan(p.Context); err != nil {
-			return nil, err
-		}
-		var connections []types.Connection
-
-		for _, bc := range bunConnections {
-			connections = append(connections, types.ConvertBunModelToConnection(&bc))
-		}
-
-		return connections, nil
-	},
-}
 
 var query = graphql.NewObject(graphql.ObjectConfig{
 	Name: "RootQuery",
 	Fields: graphql.Fields{
-		"connections": &connections,
+		"connections": &queries.Connections,
+		"redisKeys":   &queries.RedisKeys,
 	},
 })

@@ -29,3 +29,16 @@ func (c ClientRedis) TestConnection(ctx context.Context) error {
 func (c ClientRedis) Close() error {
 	return c.Client.Close()
 }
+
+func (c ClientRedis) Keys(ctx context.Context, input string) ([]string, error) {
+	var result []string
+	match := input
+	if match != "" {
+		match = ("*" + match + "*")
+	}
+	iter := c.Client.Scan(ctx, 0, match, 0).Iterator()
+	for iter.Next(ctx) {
+		result = append(result, iter.Val())
+	}
+	return result, iter.Err()
+}

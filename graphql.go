@@ -7,16 +7,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/dung28-td/dbplay/constants"
 	"github.com/dung28-td/dbplay/db"
 	"github.com/dung28-td/dbplay/db/models"
 	"github.com/dung28-td/dbplay/schema"
 	"github.com/dung28-td/dbplay/schema/types"
 	"github.com/graphql-go/graphql"
 )
-
-type ContextKey string
-
-const clientKey ContextKey = "client"
 
 type graphqlBody struct {
 	Query         string         `json:"query"`
@@ -44,7 +41,7 @@ func graphqlHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result := graphql.Do(graphql.Params{
-		Context:        context.WithValue(r.Context(), clientKey, c),
+		Context:        context.WithValue(r.Context(), constants.CurrentConnectionContextKey, c),
 		Schema:         schema.Schema,
 		RequestString:  body.Query,
 		OperationName:  body.OperationName,

@@ -7,10 +7,11 @@ import (
 )
 
 type Connection struct {
-	ID        int64   `json:"id"`
-	Name      *string `json:"name"`
-	DSN       string  `json:"dsn"`
-	Connected bool    `json:"connected"`
+	ID        int64         `json:"id"`
+	Name      *string       `json:"name"`
+	DSN       string        `json:"dsn"`
+	Connected bool          `json:"connected"`
+	Client    client.Client `json:"-"`
 }
 
 var ConnectionType = graphql.NewObject(graphql.ObjectConfig{
@@ -38,8 +39,10 @@ func ConvertBunModelToConnection(v *models.Connection) Connection {
 		DSN:       v.DSN,
 		Connected: false,
 	}
+
 	if _, ok := client.Clients[v.DSN]; ok {
 		c.Connected = true
+		c.Client = client.Clients[v.DSN]
 	}
 
 	return c
