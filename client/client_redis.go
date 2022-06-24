@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-redis/redis/v9"
 )
@@ -41,4 +42,13 @@ func (c ClientRedis) Keys(ctx context.Context, input string) ([]string, error) {
 		result = append(result, iter.Val())
 	}
 	return result, iter.Err()
+}
+
+func (c ClientRedis) Value(ctx context.Context, key string) (string, error) {
+	t, err := c.Client.Type(ctx, key).Result()
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(t)
+	return c.Client.Get(ctx, key).Result()
 }
