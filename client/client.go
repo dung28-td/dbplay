@@ -14,6 +14,10 @@ type Client interface {
 }
 
 func NewClient(dsn string) (c Client, err error) {
+	if c, ok := Clients[dsn]; ok {
+		return c, nil
+	}
+
 	u, err := url.Parse(dsn)
 	if err != nil {
 		return nil, err
@@ -39,8 +43,6 @@ func CloseClient(dsn string) error {
 			return err
 		}
 		delete(Clients, dsn)
-		return nil
-	} else {
-		return fmt.Errorf("could not found connection with DSN: %s", dsn)
 	}
+	return nil
 }
