@@ -8,7 +8,7 @@ import (
 )
 
 var RedisKeys = graphql.Field{
-	Type: graphql.NewList(graphql.String),
+	Type: graphql.NewList(types.RedisRecordType),
 	Args: graphql.FieldConfigArgument{
 		"input": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.String),
@@ -17,6 +17,22 @@ var RedisKeys = graphql.Field{
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 		connection := p.Context.Value(constants.CurrentConnectionContextKey).(types.Connection)
 		client := connection.Client.(*client.ClientRedis)
-		return client.Keys(p.Context, p.Args["input"].(string))
+		var records []types.RedisRecord
+		if keys, err := client.Keys(p.Context, p.Args["input"].(string)); err != nil {
+			return nil, err
+		} else {
+			for i := range keys {
+				k := keys[i]
+				if t, err := client.Client.Type(p.Context, k).Result(); err != nil {
+					return nil, err
+				} else {
+					records = append(records, types.RedisRecord{
+						Key:  k,
+						Type: t,
+					})
+				}
+			}
+		}
+		return records, nil
 	},
 }

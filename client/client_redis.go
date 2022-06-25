@@ -44,11 +44,24 @@ func (c ClientRedis) Keys(ctx context.Context, input string) ([]string, error) {
 	return result, iter.Err()
 }
 
-func (c ClientRedis) Value(ctx context.Context, key string) (string, error) {
+func (c ClientRedis) Value(ctx context.Context, key string) (any, error) {
 	t, err := c.Client.Type(ctx, key).Result()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	fmt.Println(t)
-	return c.Client.Get(ctx, key).Result()
+
+	switch t {
+	case "string":
+		return c.Client.Get(ctx, key).Result()
+	case "hash":
+		return c.Client.HGetAll(ctx, key).Result()
+	case "list":
+		return c.Client.LRange(ctx, key, 0, -1).Result()
+	case "set":
+		return c.Client.SMembers(ctx, key).Result()
+	case "zset":
+		return c.Client.ZRangeWithScores(ctx, key, 0, -1).Result()
+	default:
+		return nil, fmt.Errorf("currently we don't support redis \"%s\" type", t)
+	}
 }
