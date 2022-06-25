@@ -1,10 +1,24 @@
 import { Route, Routes } from 'react-router-dom';
-import Home from 'elements/Home';
+import Layout from 'components/Layout';
+import routes from 'routes';
+import { Suspense } from 'react';
 
 function App() {
   return (
     <Routes>
-      <Route path='/' element={<Home />} />
+      <Route element={<Layout />}>
+        {routes.map(({ Component, ...routeProps }, idx) => (
+          <Route
+            key={idx}
+            {...routeProps}
+            element={
+              <Suspense fallback={<div>Loadin...</div>}>
+                <Component />
+              </Suspense>
+            }
+          />
+        ))}
+      </Route>
     </Routes>
   );
 }
