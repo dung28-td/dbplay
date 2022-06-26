@@ -22,6 +22,9 @@ export const generateApolloClient = (connectionId: string = "") => {
                 }
               }
             }
+          },
+          RedisRecord: {
+            keyFields: ["key"]
           }
         }
       }),

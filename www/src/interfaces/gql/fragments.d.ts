@@ -4,3 +4,9 @@ interface CoreConnectionFields {
   dsn: string
   connected: boolean
 }
+
+interface CoreRedisRecordFields {
+  key: string
+  type: RedisRecordType
+  value: JSON
+}

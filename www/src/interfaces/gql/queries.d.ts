@@ -13,4 +13,12 @@ interface Queries {
       connectionId: string
     }
   }
+  REDIS_KEYS: {
+    data: {
+      redisKeys: CoreRedisRecordFields[]
+    }
+    vars: {
+      input: string
+    }
+  }
 }

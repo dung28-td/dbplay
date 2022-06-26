@@ -50,7 +50,7 @@ export default function ConnectionLayout() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Box flexGrow={1}>
+      <Box flexGrow={1} overflow='hidden'>
         {loading && (
           <Stack height={1} justifyContent='center' alignItems='center'>
             <CircularProgress size={40} />

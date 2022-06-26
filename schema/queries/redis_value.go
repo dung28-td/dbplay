@@ -15,7 +15,7 @@ var RedisValue = graphql.Field{
 		},
 	},
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-		connection := p.Context.Value(constants.CurrentConnectionContextKey).(types.Connection)
+		connection := p.Context.Value(constants.CurrentConnectionContextKey).(*types.Connection)
 		client := connection.Client.(*client.ClientRedis)
 		k := p.Args["key"].(string)
 		t, err := client.Client.Type(p.Context, k).Result()

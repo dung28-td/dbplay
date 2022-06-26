@@ -14,3 +14,11 @@ export const CoreConnectionFields = gql`
     connected
   }
 `
+
+export const CoreRedisRecordFields = gql`
+  fragment CoreRedisRecordFields on RedisRecord {
+    key
+    type
+    value
+  }
+`

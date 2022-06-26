@@ -18,3 +18,12 @@ export const CONNECTION = gql`
     }
   }
 `
+
+export const REDIS_KEYS = gql`
+  ${fragments.CoreRedisRecordFields}
+  query RedisKeys($input: String!) {
+    redisKeys(input: $input) {
+      ...CoreRedisRecordFields
+    }
+  }
+`
