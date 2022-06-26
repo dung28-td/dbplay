@@ -64,7 +64,6 @@ export default function NewConnectionModal(props: WithModalProps<Props>) {
         >
           <TextField
             autoFocus
-            fullWidth
             name='connection[name]'
             variant="standard"
             margin="normal"
@@ -72,7 +71,6 @@ export default function NewConnectionModal(props: WithModalProps<Props>) {
             placeholder='E.g. Local Redis'
           />
           <TextField
-            fullWidth
             required
             name='connection[dsn]'
             variant="standard"

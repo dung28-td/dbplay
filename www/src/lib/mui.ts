@@ -11,6 +11,11 @@ export const theme = createTheme({
       defaultProps: {
         size: 24
       }
+    },
+    MuiTextField: {
+      defaultProps: {
+        fullWidth: true
+      }
     }
   }
 })
