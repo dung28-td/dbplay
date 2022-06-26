@@ -20,11 +20,11 @@ const appbarSx: Sx = {
 }
 
 export default function ConnectionLayout() {
-  const { id } = useParams()
+  const { connectionId } = useParams()
   const { loading, data } = useQuery('CONNECTION', {
     fetchPolicy: 'cache-and-network',
     variables: {
-      connectionId: id!
+      connectionId: connectionId!
     }
   })
 
@@ -72,11 +72,11 @@ function MainLayout({ connection }: MainLayoutProps) {
   const { id, dsn } = connection
   const match = useDSN(dsn)
   const connectionClient = useMemo(() => generateApolloClient(id), [id])
-  const Layout =
+  const Layout = (
     match?.scheme &&
     match.scheme in CONNECTION_TYPES &&
-    CONNECTION_TYPES[match.scheme as keyof typeof CONNECTION_TYPES].Layout ||
-    Fragment
+    CONNECTION_TYPES[match.scheme as keyof typeof CONNECTION_TYPES].Layout
+  ) || Fragment
 
   return (
     <ApolloProvider client={connectionClient}>

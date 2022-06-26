@@ -6,6 +6,7 @@ import ListItemIcon from "@mui/material/ListItemIcon"
 import Chip from "@mui/material/Chip"
 import HighlightText from "./HighlightText"
 import { REDIS_RECORD_TYPES } from "constants/index"
+import { Link } from "react-router-dom"
 
 const chipSx: Sx = {
   textTransform: 'lowercase',
@@ -19,14 +20,20 @@ const primaryTextProps = {
 }
 
 interface Props {
+  active?: boolean
   record: CoreRedisRecordFields
   input: string
+  url: string
 }
 
-function RedisKey({ record, input }: Props) {
+function RedisKey({ active, record, input, url }: Props) {
   return (
     <ListItem disablePadding>
-      <ListItemButton>
+      <ListItemButton
+        selected={active}
+        component={Link}
+        to={url}
+      >
         <ListItemIcon>
           <Chip color={REDIS_RECORD_TYPES[record.type].color} size='small' label={record.type} sx={chipSx} />
         </ListItemIcon>

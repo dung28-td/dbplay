@@ -14,7 +14,7 @@ export default function useQueryString() {
     const prevInit = new URLSearchParams(spRef.current.toString())
     const nextInit = next(prevInit)
     setSearchParams(nextInit, options)
-  }, [])
+  }, [setSearchParams])
 
   return [queryString, setQueryString] as const
 }

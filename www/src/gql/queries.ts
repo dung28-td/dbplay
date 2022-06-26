@@ -27,3 +27,12 @@ export const REDIS_KEYS = gql`
     }
   }
 `
+
+export const REDIS_VALUE = gql`
+  ${fragments.CoreRedisRecordFields}
+  query RedisValue($key: String!) {
+    redisValue(key: $key) {
+      ...CoreRedisRecordFields
+    }
+  }
+`

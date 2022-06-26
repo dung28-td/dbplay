@@ -21,4 +21,12 @@ interface Queries {
       input: string
     }
   }
+  REDIS_VALUE: {
+    data: {
+      redisValue: CoreRedisRecordFields | null
+    }
+    vars: {
+      key: string
+    }
+  }
 }
