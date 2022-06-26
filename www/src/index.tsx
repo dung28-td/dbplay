@@ -11,6 +11,8 @@ import { theme } from 'lib/mui';
 // Apollo
 import { ApolloProvider } from '@apollo/client';
 import { generateApolloClient } from 'lib/apollo';
+// Modals
+import ModalsContainer from 'components/ModalsContainer';
 
 const client = generateApolloClient()
 
@@ -24,6 +26,7 @@ root.render(
         <CssBaseline />
         <BrowserRouter>
           <App />
+          <ModalsContainer />
         </BrowserRouter>
       </ThemeProvider>
     </ApolloProvider>

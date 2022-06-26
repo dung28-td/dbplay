@@ -27,7 +27,7 @@ func NewClient(dsn string) (c Client, err error) {
 	case "redis", "rediss", "unix":
 		c, err = NewClientRedis(dsn)
 	default:
-		c, err = nil, fmt.Errorf("currently we don't support \"%s\" DB", u.Scheme)
+		c, err = nil, fmt.Errorf("currently, %q connection is not supported", u.Scheme)
 	}
 
 	if c != nil {

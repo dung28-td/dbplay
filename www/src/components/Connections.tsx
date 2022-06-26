@@ -8,6 +8,8 @@ import Add from "icons/Add";
 import useQuery from "hooks/useQuery";
 import { ListItemText } from "@mui/material";
 import Connection from "./Connection";
+import { openModal } from "./ModalsContainer";
+import NewConnectionModal from "modals/NewConnectionModal";
 
 const subheaderSx: Sx = {
   display: 'flex',
@@ -33,6 +35,7 @@ export default function Connections() {
           <IconButton
             size='small'
             edge='end'
+            onClick={() => openModal(NewConnectionModal, {})}
           >
             <Add />
           </IconButton>
