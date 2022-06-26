@@ -5,4 +5,12 @@ interface Queries {
     }
     vars?: {}
   }
+  CONNECTION: {
+    data: {
+      connection: CoreConnectionFields | null
+    }
+    vars: {
+      connectionId: string
+    }
+  }
 }

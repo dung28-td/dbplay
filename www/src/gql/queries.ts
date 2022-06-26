@@ -9,3 +9,12 @@ export const CONNECTIONS = gql`
     }
   }
 `
+
+export const CONNECTION = gql`
+  ${fragments.CoreConnectionFields}
+  query Connection($connectionId: ID) {
+    connection(connectionId: $connectionId) {
+      ...CoreConnectionFields
+    }
+  }
+`

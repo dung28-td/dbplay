@@ -7,6 +7,7 @@ import useDSN from "hooks/useDSN";
 import SettingBold from "icons/SettingBold";
 import { Link, useLocation } from "react-router-dom";
 import { CONNECTION_TYPES } from "constants/index";
+import ConnectionOrigin from "./ConnectionOrigin";
 
 const itemSx: Sx = {
   '&:not(:hover) .MuiListItemSecondaryAction-root': {
@@ -60,7 +61,7 @@ export default function Connection({ connection }: Props) {
         )}
         <ListItemText
           primary={name}
-          secondary={[match?.host, match?.port].filter(Boolean).join(':')}
+          secondary={<ConnectionOrigin dsn={dsn} />}
         />
       </ListItemButton>
     </ListItem>

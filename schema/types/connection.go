@@ -1,7 +1,10 @@
 package types
 
 import (
+	"context"
+
 	"github.com/dung28-td/dbplay/client"
+	"github.com/dung28-td/dbplay/db"
 	"github.com/dung28-td/dbplay/db/models"
 	"github.com/graphql-go/graphql"
 )
@@ -32,7 +35,7 @@ var ConnectionType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-func ConvertBunModelToConnection(v *models.Connection) Connection {
+func ConvertBunModelToConnection(v *models.Connection) *Connection {
 	c := Connection{
 		ID:        v.ID,
 		Name:      v.Name,
@@ -45,5 +48,16 @@ func ConvertBunModelToConnection(v *models.Connection) Connection {
 		c.Client = client.Clients[v.DSN]
 	}
 
-	return c
+	return &c
+}
+
+func GetConnectionFromDB(ctx context.Context, id string) (*Connection, error) {
+	v := new(models.Connection)
+	if err := db.DB.NewSelect().
+		Model(v).
+		Where("id = ?", id).
+		Scan(ctx); err != nil {
+		return nil, err
+	}
+	return ConvertBunModelToConnection(v), nil
 }

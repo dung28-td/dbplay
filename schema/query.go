@@ -9,6 +9,7 @@ var query = graphql.NewObject(graphql.ObjectConfig{
 	Name: "RootQuery",
 	Fields: graphql.Fields{
 		"connections": &queries.Connections,
+		"connection":  &queries.Connection,
 		"redisKeys":   &queries.RedisKeys,
 		"redisValue":  &queries.RedisValue,
 	},

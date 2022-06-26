@@ -17,7 +17,7 @@ var Connections = graphql.Field{
 			Scan(p.Context); err != nil {
 			return nil, err
 		}
-		var connections []types.Connection
+		var connections []*types.Connection
 
 		for _, bc := range bunConnections {
 			connections = append(connections, types.ConvertBunModelToConnection(&bc))

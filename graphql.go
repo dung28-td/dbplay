@@ -5,11 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/dung28-td/dbplay/constants"
-	"github.com/dung28-td/dbplay/db"
-	"github.com/dung28-td/dbplay/db/models"
 	"github.com/dung28-td/dbplay/schema"
 	"github.com/dung28-td/dbplay/schema/types"
 	"github.com/graphql-go/graphql"
@@ -29,19 +26,15 @@ func graphqlHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var c types.Connection
-	if connectionId, err := strconv.ParseInt(r.Header.Get("X-Connection-ID"), 10, 64); err == nil {
-		v := new(models.Connection)
-		if err := db.DB.NewSelect().
-			Model(v).
-			Where("id = ?", connectionId).
-			Scan(r.Context()); err == nil {
-			c = types.ConvertBunModelToConnection(v)
+	var connection *types.Connection
+	if id := r.Header.Get("X-Connection-ID"); id != "" {
+		if c, err := types.GetConnectionFromDB(r.Context(), id); err == nil {
+			connection = c
 		}
 	}
 
 	result := graphql.Do(graphql.Params{
-		Context:        context.WithValue(r.Context(), constants.CurrentConnectionContextKey, c),
+		Context:        context.WithValue(r.Context(), constants.CurrentConnectionContextKey, connection),
 		Schema:         schema.Schema,
 		RequestString:  body.Query,
 		OperationName:  body.OperationName,
