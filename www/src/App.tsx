@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import Layout from 'components/Layout';
 import routes from 'routes';
 import { Suspense } from 'react';
+import NotFound from 'elements/NotFound';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             }
           />
         ))}
+        <Route path='*' element={<NotFound />} />
       </Route>
     </Routes>
   );
