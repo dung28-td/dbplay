@@ -2,20 +2,21 @@ import React, { useCallback, useRef, useState } from "react"
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import Stack from "@mui/material/Stack"
-import Container from "@mui/material/Container"
+import AppBar from "@mui/material/AppBar"
+import Toolbar from "@mui/material/Toolbar"
 import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemText from "@mui/material/ListItemText"
 import CircularProgress from "@mui/material/CircularProgress"
 import InputAdornment from "@mui/material/InputAdornment"
 import useQuery from "hooks/useQuery"
 import RedisKey from "./RedisKey"
-import { ListItem, ListItemText } from "@mui/material"
 import { useLocation, useParams } from "react-router-dom"
 
-const containerSx: Sx = {
+const toolbarSx: Sx = {
   px: {
     sm: 2
-  },
-  pt: 2
+  }
 }
 
 export default function RedisKeys() {
@@ -35,22 +36,25 @@ export default function RedisKeys() {
 
   return (
     <Stack width={320} borderRight={1} borderColor='divider'>
-      <Container sx={containerSx}>
-        <TextField
-          label='Key'
-          type='search'
-          placeholder="E.g. redis:key"
-          defaultValue={input}
-          onChange={onInputChange}
-          InputProps={{
-            endAdornment: loading && (
-              <InputAdornment position="end">
-                <CircularProgress />
-              </InputAdornment>
-            )
-          }}
-        />
-      </Container>
+      <AppBar position="relative" color='transparent' elevation={0}>
+        <Toolbar sx={toolbarSx}>
+          <TextField
+            size='small'
+            label='Key'
+            type='search'
+            placeholder="E.g. redis:key"
+            defaultValue={input}
+            onChange={onInputChange}
+            InputProps={{
+              endAdornment: loading && (
+                <InputAdornment position="end">
+                  <CircularProgress />
+                </InputAdornment>
+              )
+            }}
+          />
+        </Toolbar>
+      </AppBar>
       <Box overflow='auto' flexGrow={1}>
         <List dense>
           {!loading && data?.redisKeys.length === 0 && (

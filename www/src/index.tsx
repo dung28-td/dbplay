@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 // MUI dependencies
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import { theme } from 'lib/mui';
+import { lightTheme } from 'lib/mui';
 // Apollo
 import { ApolloProvider } from '@apollo/client';
 import { generateApolloClient } from 'lib/apollo';
@@ -22,7 +22,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={lightTheme}>
         <CssBaseline />
         <BrowserRouter>
           <App />

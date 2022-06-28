@@ -1,9 +1,19 @@
 import { createTheme } from "@mui/material/styles";
 
-export const theme = createTheme({
+declare module '@mui/material/styles' {
+  interface TypeBackground {
+    monokai: string
+  }
+}
+
+const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
   palette: {
+    mode,
     background: {
-      paper: '#f3f4f6'
+      ...(mode === 'light' && {
+        paper: '#f3f4f6',
+      }),
+      monokai: '#272822'
     }
   },
   components: {
@@ -19,3 +29,6 @@ export const theme = createTheme({
     }
   }
 })
+
+export const lightTheme = createMuiTheme('light')
+export const darkTheme = createMuiTheme('dark')

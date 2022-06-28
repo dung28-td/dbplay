@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import CircularProgress from "@mui/material/CircularProgress";
 import Add from "icons/Add";
 import useQuery from "hooks/useQuery";
-import { ListItemText } from "@mui/material";
+import ListItemText from "@mui/material/ListItemText";
 import Connection from "./Connection";
 import { openModal } from "./ModalsContainer";
 import NewConnectionModal from "modals/NewConnectionModal";
