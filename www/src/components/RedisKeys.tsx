@@ -9,9 +9,11 @@ import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
 import CircularProgress from "@mui/material/CircularProgress"
 import InputAdornment from "@mui/material/InputAdornment"
+import IconButton from "@mui/material/IconButton"
 import useQuery from "hooks/useQuery"
 import RedisKey from "./RedisKey"
-import { useLocation, useParams } from "react-router-dom"
+import { Link, useLocation, useParams } from "react-router-dom"
+import Add from "icons/Add"
 
 const toolbarSx: Sx = {
   px: {
@@ -53,6 +55,15 @@ export default function RedisKeys() {
               )
             }}
           />
+          <Box ml={1}>
+            <IconButton
+              edge='end'
+              component={Link}
+              to={`/connections/${connectionId}/records/new`}
+            >
+              <Add />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
       <Box overflow='auto' flexGrow={1}>
@@ -63,7 +74,7 @@ export default function RedisKeys() {
             </ListItem>
           )}
           {data?.redisKeys.map(record => {
-            const url = '/connections/' + connectionId + '/keys/' + record.key
+            const url = '/connections/' + connectionId + '/records/' + record.key
             const active =
               pathname === url ||
               pathname.startsWith(url + '/' )

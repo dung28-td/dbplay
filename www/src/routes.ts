@@ -24,7 +24,11 @@ const routes: RoutePropsWithoutElement[] = [
         Component: lazy(() => import('elements/Connection'))
       },
       {
-        path: 'keys/:key',
+        path: 'records/new',
+        Component: lazy(() => import('elements/NewRedisRecord'))
+      },
+      {
+        path: 'records/:key',
         Component: lazy(() => import('elements/RedisRecord'))
       }
     ]

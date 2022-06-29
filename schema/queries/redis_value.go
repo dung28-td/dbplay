@@ -22,7 +22,7 @@ var RedisValue = graphql.Field{
 		if err != nil {
 			return nil, err
 		}
-		v, err := client.Value(p.Context, k)
+		v, err := client.Get(p.Context, k)
 		if err != nil {
 			return nil, err
 		}

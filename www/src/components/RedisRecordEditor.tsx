@@ -14,23 +14,42 @@ import { every } from "utils/object";
 
 const recordTypes = Object.keys(REDIS_RECORD_TYPES)
 
-interface Props {
-  record: CoreRedisRecordFields
+const defaultRecord: RedisRecord = {
+  key: '',
+  type: 'STRING',
+  value: undefined as any
 }
 
-type Errors = Partial<Record<keyof CoreRedisRecordFields, string | undefined>>
+interface Props {
+  loading?: boolean
+  record?: RedisRecord
+  onSave?: (record: RedisRecord) => void
+}
 
-export default function RedisRecordEditor({ record }: Props) {
+type Errors = Partial<Record<keyof RedisRecord, string | undefined>>
+
+export default function RedisRecordEditor({
+  loading,
+  onSave,
+  record = defaultRecord
+}: Props) {
   const [newRecord, setNewRecord] = useReducer(
     (
-      s: CoreRedisRecordFields,
-      a: Partial<CoreRedisRecordFields>
+      s: RedisRecord,
+      a: Partial<RedisRecord>
     ) => ({ ...s, ...a }),
     record
   )
   const [errors, setErrors] = useReducer(
     (s: Errors, a: Errors) => ({ ...s, ...a }),
-    {}
+    {
+      ...(!record.key && {
+        key: 'Key is required!'
+      }),
+      ...(record.value ? {} : {
+        value: 'Key is required!'
+      })
+    }
   )
 
   const savable =
@@ -65,7 +84,12 @@ export default function RedisRecordEditor({ record }: Props) {
             </Stack>
             <LoadingButton
               disabled={!savable}
+              loading={loading}
               variant="contained"
+              onClick={onSave
+                ? () => onSave(newRecord)
+                : undefined
+              }
             >
               Save
             </LoadingButton>
@@ -75,6 +99,10 @@ export default function RedisRecordEditor({ record }: Props) {
           value={newRecord.value}
           onChange={value => setNewRecord({ value })}
           onError={err => setErrors({ value: err })}
+          onSave={onSave
+            ? () => onSave(newRecord)
+            : undefined
+          }
         />
       </Stack>
     </ThemeProvider>

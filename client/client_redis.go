@@ -44,7 +44,7 @@ func (c ClientRedis) Keys(ctx context.Context, input string) ([]string, error) {
 	return result, iter.Err()
 }
 
-func (c ClientRedis) Value(ctx context.Context, key string) (any, error) {
+func (c ClientRedis) Get(ctx context.Context, key string) (any, error) {
 	t, err := c.Client.Type(ctx, key).Result()
 	if err != nil {
 		return nil, err
@@ -62,6 +62,50 @@ func (c ClientRedis) Value(ctx context.Context, key string) (any, error) {
 	case "zset":
 		return c.Client.ZRangeWithScores(ctx, key, 0, -1).Result()
 	default:
-		return nil, fmt.Errorf("currently we don't support redis \"%s\" type", t)
+		return nil, fmt.Errorf("currently we don't support redis %q type", t)
+	}
+}
+
+func (c ClientRedis) Set(ctx context.Context, t string, k string, v any) error {
+	switch t {
+	case "string":
+		return c.Client.Set(ctx, k, v, 0).Err()
+	case "hash":
+		return c.Client.HSet(ctx, k, v).Err()
+	case "list":
+		err := c.Client.Del(ctx, k).Err()
+		if err != nil {
+			return err
+		}
+
+		err = c.Client.RPush(ctx, k, v.([]any)...).Err()
+		return err
+	case "set":
+		err := c.Client.Del(ctx, k).Err()
+		if err != nil {
+			return err
+		}
+
+		err = c.Client.SAdd(ctx, k, v.([]any)...).Err()
+		return err
+	case "zset":
+		err := c.Client.Del(ctx, k).Err()
+		if err != nil {
+			return err
+		}
+
+		var values []redis.Z
+		for _, item := range v.([]any) {
+			z := item.(map[string]any)
+			values = append(values, redis.Z{
+				Score:  z["Score"].(float64),
+				Member: z["Member"],
+			})
+		}
+
+		err = c.Client.ZAdd(ctx, k, values...).Err()
+		return err
+	default:
+		return fmt.Errorf("currently we don't support redis %q type", t)
 	}
 }

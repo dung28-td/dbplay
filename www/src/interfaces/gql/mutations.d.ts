@@ -10,4 +10,12 @@ interface Mutations {
       }
     }
   }
+  CREATE_REDIS_RECORD: {
+    data: {
+      createRedisRecord: CoreRedisRecordFields | null
+    }
+    vars: {
+      input: RedisRecord
+    }
+  }
 }

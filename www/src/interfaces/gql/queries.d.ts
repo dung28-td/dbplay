@@ -15,7 +15,7 @@ interface Queries {
   }
   REDIS_KEYS: {
     data: {
-      redisKeys: CoreRedisRecordFields[]
+      redisKeys: Omit<CoreRedisRecordFields, 'value'>[]
     }
     vars: {
       input: string

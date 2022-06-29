@@ -8,8 +8,9 @@ import (
 var mutation = graphql.NewObject(graphql.ObjectConfig{
 	Name: "RootMutation",
 	Fields: graphql.Fields{
-		"createConnection": &mutations.CreateConnection,
-		"connect":          &mutations.Connect,
-		"disconnect":       &mutations.Disconnect,
+		"createConnection":  &mutations.CreateConnection,
+		"connect":           &mutations.Connect,
+		"disconnect":        &mutations.Disconnect,
+		"createRedisRecord": &mutations.CreateRedisRecord,
 	},
 })

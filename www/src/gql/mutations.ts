@@ -9,3 +9,12 @@ export const CREATE_CONNECTION = gql`
     }
   }
 `
+
+export const CREATE_REDIS_RECORD = gql`
+  ${fragments.CoreRedisRecordFields}
+  mutation CreateRedisRecord($input: RedisRecordInput!) {
+    createRedisRecord(input: $input) {
+      ...CoreRedisRecordFields
+    }
+  }
+`
