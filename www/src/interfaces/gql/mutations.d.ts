@@ -27,4 +27,12 @@ interface Mutations {
       input: RedisRecord
     }
   }
+  DELETE_REDIS_RECORDS: {
+    data: {
+      deleteRedisRecords: 'ok' | null
+    }
+    vars: {
+      keys: string[]
+    }
+  }
 }

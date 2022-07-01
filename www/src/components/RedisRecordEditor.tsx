@@ -9,8 +9,11 @@ import Toolbar from "@mui/material/Toolbar";
 import LoadingButton from "@mui/lab/LoadingButton";
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import IconButton from "@mui/material/IconButton";
 import { REDIS_RECORD_TYPES } from 'constants/index';
 import { every } from "utils/object";
+import Trash from "icons/Trash";
+import { confirm } from "modals/ConfirmModal";
 
 const recordTypes = Object.keys(REDIS_RECORD_TYPES)
 
@@ -20,34 +23,52 @@ const defaultRecord: RedisRecord = {
   value: undefined as any
 }
 
-interface Props {
+const confirmDeleteOpts = {
+  title: 'Hey, wait a minute...',
+  desc: 'This action cannot be undone. Are you sure you want to delete this record?'
+}
+
+interface CommonProps {
   loading?: boolean
-  record?: RedisRecord
   onSave?: (record: RedisRecord) => void
 }
 
+interface NewProps {
+}
+
+interface EditProps {
+  record: RedisRecord
+  onDelete: () => void
+}
+
+type Props = CommonProps & (NewProps | EditProps)
+
 type Errors = Partial<Record<keyof RedisRecord, string | undefined>>
 
-export default function RedisRecordEditor({
-  loading,
-  onSave,
-  record = defaultRecord
-}: Props) {
+export default function RedisRecordEditor({ loading, onSave, ...props }: Props) {
+  let record: RedisRecord | undefined
+  let onDelete: (() => void) | undefined
+
+  if ('record' in props) {
+    record = props.record
+    onDelete = props.onDelete
+  }
+
   const [newRecord, setNewRecord] = useReducer(
     (
       s: RedisRecord,
       a: Partial<RedisRecord>
     ) => ({ ...s, ...a }),
-    record
+    record || defaultRecord
   )
   const [errors, setErrors] = useReducer(
     (s: Errors, a: Errors) => ({ ...s, ...a }),
     {
-      ...(!record.key && {
+      ...(!record?.key && {
         key: 'Key is required!'
       }),
-      ...(record.value ? {} : {
-        value: 'Key is required!'
+      ...(!record?.value && {
+        value: 'Value is required!'
       })
     }
   )
@@ -82,17 +103,31 @@ export default function RedisRecordEditor({
                 }}
               />
             </Stack>
-            <LoadingButton
-              disabled={!savable}
-              loading={loading}
-              variant="contained"
-              onClick={onSave
-                ? () => onSave(newRecord)
-                : undefined
-              }
-            >
-              Save
-            </LoadingButton>
+            <Stack direction='row' spacing={1}>
+              <LoadingButton
+                disabled={!savable}
+                loading={loading}
+                variant="contained"
+                onClick={onSave
+                  ? () => onSave(newRecord)
+                  : undefined
+                }
+              >
+                Save
+              </LoadingButton>
+              {record && (
+                <IconButton
+                  color="error"
+                  edge='end'
+                  onClick={async () => {
+                    if (!await confirm(confirmDeleteOpts)) return
+                    if (onDelete) onDelete()
+                  }}
+                >
+                  <Trash />
+                </IconButton>
+              )}
+            </Stack>
           </Toolbar>
         </AppBar>
         <JsonEditor

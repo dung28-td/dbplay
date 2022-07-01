@@ -33,3 +33,9 @@ export const UPDATE_REDIS_RECORD = gql`
     }
   }
 `
+
+export const DELETE_REDIS_RECORDS = gql`
+  mutation DeleteRedisRecords($keys: [ID]) {
+    deleteRedisRecords(keys: $keys)
+  }
+`

@@ -54,6 +54,22 @@ function EditRedisRecord({ record }: EditRedisRecordProps) {
       }
     }
   })
+  const [deleteRedisRecords] = useMutation('DELETE_REDIS_RECORDS', {
+    variables: {
+      keys: [key!]
+    },
+    onCompleted(data) {
+      if (!data.deleteRedisRecords) return
+      navigate(`/connections/${connectionId}`, {
+        replace: true
+      })
+    },
+    update(cache) {
+      cache.evict({
+        id: cache.identify(record as unknown as StoreObject)
+      })
+    }
+  })
 
   if (!key) return null
 
@@ -64,6 +80,7 @@ function EditRedisRecord({ record }: EditRedisRecordProps) {
       key={record.key}
       loading={loading}
       record={redisRecord}
+      onDelete={deleteRedisRecords}
       onSave={input => updateRedisRecord({
         variables: {
           key,
