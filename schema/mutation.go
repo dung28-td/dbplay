@@ -12,5 +12,6 @@ var mutation = graphql.NewObject(graphql.ObjectConfig{
 		"connect":           &mutations.Connect,
 		"disconnect":        &mutations.Disconnect,
 		"createRedisRecord": &mutations.CreateRedisRecord,
+		"updateRedisRecord": &mutations.UpdateRedisRecord,
 	},
 })

@@ -18,4 +18,13 @@ interface Mutations {
       input: RedisRecord
     }
   }
+  UPDATE_REDIS_RECORD: {
+    data: {
+      updateRedisRecord: CoreRedisRecordFields | null
+    }
+    vars: {
+      key: string
+      input: RedisRecord
+    }
+  }
 }

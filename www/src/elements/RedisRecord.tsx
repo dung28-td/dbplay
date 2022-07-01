@@ -1,9 +1,10 @@
+import { StoreObject } from "@apollo/client";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import RedisRecordEditor from "components/RedisRecordEditor";
+import useMutation from "hooks/useMutation";
 import useQuery from "hooks/useQuery";
-import { useParams } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function RedisRecord() {
   const { key } = useParams()
@@ -21,10 +22,54 @@ export default function RedisRecord() {
 
   if (!data?.redisValue) return null
 
+  return <EditRedisRecord record={data.redisValue} />
+}
+
+interface EditRedisRecordProps {
+  record: CoreRedisRecordFields
+}
+
+function EditRedisRecord({ record }: EditRedisRecordProps) {
+  const { connectionId, key } = useParams()
+  const navigate = useNavigate()
+  const [updateRedisRecord, { loading }] = useMutation('UPDATE_REDIS_RECORD', {
+    onCompleted(data) {
+      if (!data.updateRedisRecord) return
+      navigate(`/connections/${connectionId}/records/${data.updateRedisRecord.key}`, {
+        replace: true
+      })
+    },
+    update(cache, { data }) {
+      if (data?.updateRedisRecord && data.updateRedisRecord.key !== key) {
+        cache.evict({
+          id: cache.identify(record as unknown as StoreObject)
+        })
+        cache.modify({
+          fields: {
+            redisKeys(_, { DELETE }) {
+              return DELETE
+            }
+          }
+        })
+      }
+    }
+  })
+
+  if (!key) return null
+
+  const { __typename, ...redisRecord } = record
+
   return (
     <RedisRecordEditor
-      key={data.redisValue.key}
-      record={data.redisValue}
+      key={record.key}
+      loading={loading}
+      record={redisRecord}
+      onSave={input => updateRedisRecord({
+        variables: {
+          key,
+          input
+        }
+      })}
     />
   )
 }

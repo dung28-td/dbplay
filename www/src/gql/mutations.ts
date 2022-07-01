@@ -18,3 +18,18 @@ export const CREATE_REDIS_RECORD = gql`
     }
   }
 `
+
+export const UPDATE_REDIS_RECORD = gql`
+  ${fragments.CoreRedisRecordFields}
+  mutation UpdateRedisRecord(
+    $key: ID!
+    $input: RedisRecordInput!
+  ) {
+    updateRedisRecord(
+      key: $key,
+      input: $input
+    ) {
+      ...CoreRedisRecordFields
+    }
+  }
+`
