@@ -1,19 +1,23 @@
-import React, { useCallback, useRef, useState } from "react"
+import React, { useCallback, useReducer, useRef } from "react"
 import Box from "@mui/material/Box"
 import TextField from "@mui/material/TextField"
 import Stack from "@mui/material/Stack"
 import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
-import List from "@mui/material/List"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
 import CircularProgress from "@mui/material/CircularProgress"
 import InputAdornment from "@mui/material/InputAdornment"
 import IconButton from "@mui/material/IconButton"
+import Typography from "@mui/material/Typography"
 import useQuery from "hooks/useQuery"
 import RedisKey from "./RedisKey"
 import { Link, useLocation, useParams } from "react-router-dom"
 import Add from "icons/Add"
+import useMutation from "hooks/useMutation"
+import Trash from "icons/Trash"
+import { confirm } from "modals/ConfirmModal"
+import ListSelection, { RenderItemProps } from "./ListSelection"
 
 const toolbarSx: Sx = {
   px: {
@@ -24,73 +28,163 @@ const toolbarSx: Sx = {
 export default function RedisKeys() {
   const { pathname } = useLocation()
   const { connectionId } = useParams()
-  const [input, setInput] = useState('')
-  const timer = useRef<NodeJS.Timeout>()
+  const [input, setInput] = useReducer((_state: string, input: string) => input, '')
+  const [indexes, setIndexes] = useReducer((_state: number[], indexes: number[]) => indexes, [])
   const { loading, data } = useQuery('REDIS_KEYS', {
     variables: { input }
   })
+
+  const renderItem = useCallback(({ item, selected, onSelect }: RenderItemProps<Omit<CoreRedisRecordFields, 'value'>>) => {
+    const url = '/connections/' + connectionId + '/records/' + item.key
+
+    return (
+      <RedisKey
+        key={item.key}
+        input={input}
+        url={url}
+        record={item}
+        selected={selected}
+        onSelect={onSelect}
+      />
+    )
+  }, [connectionId, input])
+
+  const initializer = useCallback((items: Omit<CoreRedisRecordFields, 'value'>[]) => {
+    const idx = items.findIndex(({ key }) => {
+      const url = `/connections/${connectionId}/records/${key}`
+      return pathname === url || pathname.startsWith(url + '/')
+    })
+
+    return idx > -1 ? [idx] : []
+  }, [pathname, connectionId])
+
+  return (
+    <Stack width={320} borderRight={1} borderColor='divider'>
+      <AppBar
+        position="relative"
+        color={indexes.length > 1 ? undefined : 'transparent'}
+        elevation={0}
+      >
+        {indexes.length > 1 ? (
+          <SelectionToolbar
+            selectedRecords={data?.redisKeys.filter((_, i) => indexes.includes(i)) || []}
+          />
+        ) : (
+          <DefaultToolbar
+            loading={loading}
+            input={input}
+            setInput={setInput}
+          />
+        )}
+      </AppBar>
+      <Box overflow='auto' flexGrow={1}>
+        <ListSelection
+          dense
+          loading={loading}
+          items={data?.redisKeys || []}
+          renderItem={renderItem}
+          EmptyState={EmptyState}
+          initializer={initializer}
+          onChange={setIndexes}
+        />
+      </Box>
+    </Stack>
+  )
+}
+
+interface DefaultToolbarProps {
+  loading: boolean
+  input: string
+  setInput: (input: string)  => void
+}
+
+function DefaultToolbar({ loading, input, setInput }: DefaultToolbarProps) {
+  const { connectionId } = useParams()
+  const timer = useRef<NodeJS.Timeout>()
 
   const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.currentTarget
     if (timer.current) clearTimeout(timer.current)
     timer.current = setTimeout(() => setInput(value), 300)
-  }, [])
+  }, [setInput])
 
   return (
-    <Stack width={320} borderRight={1} borderColor='divider'>
-      <AppBar position="relative" color='transparent' elevation={0}>
-        <Toolbar sx={toolbarSx}>
-          <TextField
-            size='small'
-            label='Key'
-            type='search'
-            placeholder="E.g. redis:key"
-            defaultValue={input}
-            onChange={onInputChange}
-            InputProps={{
-              endAdornment: loading && (
-                <InputAdornment position="end">
-                  <CircularProgress />
-                </InputAdornment>
-              )
-            }}
-          />
-          <Box ml={1}>
-            <IconButton
-              edge='end'
-              component={Link}
-              to={`/connections/${connectionId}/records/new`}
-            >
-              <Add />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <Box overflow='auto' flexGrow={1}>
-        <List dense>
-          {!loading && data?.redisKeys.length === 0 && (
-            <ListItem>
-              <ListItemText secondary='No records found' />
-            </ListItem>
-          )}
-          {data?.redisKeys.map(record => {
-            const url = '/connections/' + connectionId + '/records/' + record.key
-            const active =
-              pathname === url ||
-              pathname.startsWith(url + '/' )
-
-            return (
-              <RedisKey
-                active={active}
-                key={record.key}
-                input={input}
-                url={url}
-                record={record}
-              />
-            )
-          })}
-        </List>
+    <Toolbar sx={toolbarSx}>
+      <TextField
+        size='small'
+        label='Key'
+        type='search'
+        placeholder="E.g. redis:key"
+        defaultValue={input}
+        onChange={onInputChange}
+        InputProps={{
+          endAdornment: loading && (
+            <InputAdornment position="end">
+              <CircularProgress />
+            </InputAdornment>
+          )
+        }}
+      />
+      <Box ml={1}>
+        <IconButton
+          edge='end'
+          component={Link}
+          to={`/connections/${connectionId}/records/new`}
+        >
+          <Add />
+        </IconButton>
       </Box>
-    </Stack>
+    </Toolbar>
+  )
+}
+
+interface SelectionToolbarProps {
+  selectedRecords: Omit<CoreRedisRecordFields, 'value'>[]
+}
+
+function SelectionToolbar({ selectedRecords }: SelectionToolbarProps) {
+  const [deleteRedisRecords, { loading }] = useMutation('DELETE_REDIS_RECORDS', {
+    variables: {
+      keys: selectedRecords.map(r => r.key)
+    },
+    update(cache) {
+      for (const record of selectedRecords) {
+        cache.evict({
+          id: cache.identify(record)
+        })
+      }
+    }
+  })
+
+  return (
+    <Toolbar sx={toolbarSx}>
+      <Box flexGrow={1}>
+        <Typography>
+          {selectedRecords.length} selected
+        </Typography>
+      </Box>
+      <IconButton
+        disabled={loading}
+        color='inherit'
+        edge='end'
+        onClick={async () => {
+          if (!await confirm({
+            title: 'Chottomatte...',
+            desc: `You are deleting ${selectedRecords.length} items. This action cannot be undone. Are you sure?`
+          })) return
+          deleteRedisRecords()
+        }}
+      >
+        <Trash />
+      </IconButton>
+    </Toolbar>
+  )
+}
+
+function EmptyState() {
+  return (
+    <ListItem>
+      <ListItemText secondary='No records found' />
+    </ListItem>
   )
 }

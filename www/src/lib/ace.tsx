@@ -36,6 +36,7 @@ export const AceEditor = forwardRef<Ace.Editor, AceEditorProps>(({
       useWorker: false,
       mode: mode ? `ace/mode/${mode}` : undefined,
       theme: theme ? `ace/theme/${theme}` : undefined,
+      wrap: 'free'
     })
 
     if (typeof forwardedEditorRef === 'function') {

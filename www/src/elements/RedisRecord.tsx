@@ -1,4 +1,6 @@
 import { StoreObject } from "@apollo/client";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import RedisRecordEditor from "components/RedisRecordEditor";
@@ -8,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function RedisRecord() {
   const { key } = useParams()
-  const { loading, data } = useQuery('REDIS_VALUE', {
+  const { loading, data, error } = useQuery('REDIS_VALUE', {
     variables: {
       key: key!
     }
@@ -20,7 +22,15 @@ export default function RedisRecord() {
     </Box>
   )
 
-  if (!data?.redisValue) return null
+  if (!data?.redisValue || error) return (
+    <Container>
+      <Box my={2}>
+        <Typography color='error'>
+          Record not found
+        </Typography>
+      </Box>
+    </Container>
+  )
 
   return <EditRedisRecord record={data.redisValue} />
 }
@@ -57,12 +67,6 @@ function EditRedisRecord({ record }: EditRedisRecordProps) {
   const [deleteRedisRecords] = useMutation('DELETE_REDIS_RECORDS', {
     variables: {
       keys: [key!]
-    },
-    onCompleted(data) {
-      if (!data.deleteRedisRecords) return
-      navigate(`/connections/${connectionId}`, {
-        replace: true
-      })
     },
     update(cache) {
       cache.evict({

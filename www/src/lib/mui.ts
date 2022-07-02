@@ -26,6 +26,11 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
       defaultProps: {
         fullWidth: true
       }
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        disableRipple: true
+      }
     }
   }
 })

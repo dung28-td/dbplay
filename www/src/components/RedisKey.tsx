@@ -1,4 +1,4 @@
-import { memo } from "react"
+import React, { memo } from "react"
 import ListItem from "@mui/material/ListItem"
 import ListItemButton from "@mui/material/ListItemButton"
 import ListItemText from "@mui/material/ListItemText"
@@ -24,15 +24,18 @@ interface Props {
   record: Omit<CoreRedisRecordFields, 'value'>
   input: string
   url: string
+  selected: boolean
+  onSelect: (e: React.MouseEvent) => void
 }
 
-function RedisKey({ active, record, input, url }: Props) {
+function RedisKey({ record, input, url, selected, onSelect }: Props) {
   return (
     <ListItem disablePadding>
       <ListItemButton
-        selected={active}
+        selected={selected}
         component={Link}
         to={url}
+        onClick={onSelect}
       >
         <ListItemIcon>
           <Chip color={REDIS_RECORD_TYPES[record.type].color} size='small' label={record.type} sx={chipSx} />
