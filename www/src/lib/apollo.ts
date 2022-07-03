@@ -1,4 +1,5 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
+import { redisScanPagination } from "utils/apollo";
 
 const clients: {
   [key: string]: ApolloClient<NormalizedCacheObject>
@@ -15,6 +16,11 @@ export const generateApolloClient = (connectionId: string = "") => {
       uri: '/graphql',
       cache: new InMemoryCache({
         typePolicies: {
+          Query: {
+            fields: {
+              redisKeys: redisScanPagination()
+            }
+          },
           RedisRecord: {
             keyFields: ["key"]
           }

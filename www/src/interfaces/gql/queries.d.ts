@@ -15,10 +15,12 @@ interface Queries {
   }
   REDIS_KEYS: {
     data: {
-      redisKeys: Omit<CoreRedisRecordFields, 'value'>[]
+      redisKeys: RedisScanResult<Omit<CoreRedisRecordFields, 'value'>>
     }
     vars: {
-      input: string
+      cursor?: number
+      pattern?: string
+      count?: number
     }
   }
   REDIS_VALUE: {

@@ -1,3 +1,5 @@
+export const emptyArray = []
+
 export function uniq<T>(arr: T[]) {
   return arr.filter((v, i, a) => a.indexOf(v) === i)
 }

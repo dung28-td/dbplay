@@ -18,6 +18,8 @@ import useMutation from "hooks/useMutation"
 import Trash from "icons/Trash"
 import { confirm } from "modals/ConfirmModal"
 import ListSelection, { RenderItemProps } from "./ListSelection"
+import { emptyArray } from "utils/array"
+import InfiniteList from "./InfiniteList"
 
 const toolbarSx: Sx = {
   px: {
@@ -30,8 +32,10 @@ export default function RedisKeys() {
   const { connectionId } = useParams()
   const [input, setInput] = useReducer((_state: string, input: string) => input, '')
   const [indexes, setIndexes] = useReducer((_state: number[], indexes: number[]) => indexes, [])
-  const { loading, data } = useQuery('REDIS_KEYS', {
-    variables: { input }
+  const { loading, data, fetchMore } = useQuery('REDIS_KEYS', {
+    variables: {
+      pattern: input
+    }
   })
 
   const renderItem = useCallback(({ item, selected, onSelect }: RenderItemProps<Omit<CoreRedisRecordFields, 'value'>>) => {
@@ -67,7 +71,7 @@ export default function RedisKeys() {
       >
         {indexes.length > 1 ? (
           <SelectionToolbar
-            selectedRecords={data?.redisKeys.filter((_, i) => indexes.includes(i)) || []}
+            selectedRecords={data?.redisKeys.keys.filter((_, i) => indexes.includes(i)) || emptyArray}
           />
         ) : (
           <DefaultToolbar
@@ -79,13 +83,19 @@ export default function RedisKeys() {
       </AppBar>
       <Box overflow='auto' flexGrow={1}>
         <ListSelection
-          dense
-          loading={loading}
-          items={data?.redisKeys || []}
+          items={data?.redisKeys.keys}
           renderItem={renderItem}
           EmptyState={EmptyState}
           initializer={initializer}
           onChange={setIndexes}
+          ListComponent={InfiniteList}
+          ListProps={{
+            dense: true,
+            loading,
+            loadMore: data?.redisKeys.cursor === 0
+              ? undefined
+              : () => fetchMore({ variables: { cursor: data?.redisKeys.cursor } })
+          }}
         />
       </Box>
     </Stack>

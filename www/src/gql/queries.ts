@@ -20,10 +20,21 @@ export const CONNECTION = gql`
 `
 
 export const REDIS_KEYS = gql`
-  query RedisKeys($input: String!) {
-    redisKeys(input: $input) {
-      key
-      type
+  query RedisKeys(
+    $cursor: Int,
+    $pattern: String,
+    $count: Int
+  ) {
+    redisKeys(
+      cursor: $cursor,
+      pattern: $pattern,
+      count: $count
+    ) {
+      cursor
+      keys {
+        key
+        type
+      }
     }
   }
 `

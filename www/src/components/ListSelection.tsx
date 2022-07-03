@@ -40,26 +40,27 @@ export interface RenderItemProps<T> {
   onSelect: (e: React.MouseEvent) => void
 }
 
-interface Props<T> extends Omit<ListProps, 'onChange'> {
-  loading?: boolean
+interface Props<T, LP = ListProps> {
   EmptyState?: React.ComponentType
-  items: T[]
+  items?: T[]
   renderItem: (props: RenderItemProps<T>) => React.ReactNode,
   initializer?: (items: T[]) => number[]
   onChange?: (indexes: number[]) => void
+  ListComponent?: React.ComponentType<LP>
+  ListProps?: LP
 }
 
-export default function ListSelection<T>({
-  loading,
+export default function ListSelection<T, LP>({
   EmptyState = Fragment,
   items,
   renderItem,
   initializer = () => [],
   onChange,
-  ...props
-}: Props<T>) {
+  ListComponent = List,
+  ListProps
+}: Props<T, LP>) {
   const prevItemsRef = useRef(items)
-  const [state, dispatch] = useReducer(reducer, items, initializer)
+  const [state, dispatch] = useReducer(reducer, items || [], initializer)
 
   useEffect(() => {
     if (!onChange) return
@@ -67,7 +68,7 @@ export default function ListSelection<T>({
   }, [state, onChange])
 
   useEffect(() => {
-    if (prevItemsRef.current === items) return
+    if (!items || prevItemsRef.current === items) return
     prevItemsRef.current = items
 
     dispatch({
@@ -77,9 +78,10 @@ export default function ListSelection<T>({
   }, [items, initializer])
 
   return (
-    <List {...props}>
-      {!loading && items.length === 0 && <EmptyState />}
-      {items.map((item, index) => renderItem({
+    // @ts-ignore
+    <ListComponent {...ListProps}>
+      {items?.length === 0 && <EmptyState />}
+      {items?.map((item, index) => renderItem({
         item,
         selected: state.indexOf(index) > -1,
         onSelect: (e: React.MouseEvent) => {
@@ -93,6 +95,6 @@ export default function ListSelection<T>({
           }
         }
       }))}
-    </List>
+    </ListComponent>
   )
 }
