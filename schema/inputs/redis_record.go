@@ -18,5 +18,8 @@ var RedisRecordInputObject = graphql.NewInputObject(graphql.InputObjectConfig{
 		"value": &graphql.InputObjectFieldConfig{
 			Type: scalars.JsonType,
 		},
+		"expireAt": &graphql.InputObjectFieldConfig{
+			Type: graphql.Float,
+		},
 	},
 })

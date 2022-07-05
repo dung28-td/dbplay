@@ -24,19 +24,20 @@ var CreateRedisRecord = graphql.Field{
 			return nil, err
 		}
 
-		if err := client.Set(p.Context, input.Type, input.Key, input.Value); err != nil {
+		if err := client.SetWithExpiration(p.Context, input.Type, input.Key, input.Value, input.ExpireAt); err != nil {
 			return nil, err
 		}
 
-		result, err := client.Get(p.Context, input.Key)
+		result, e, err := client.GetWithExpiration(p.Context, input.Key)
 		if err != nil {
 			return nil, err
 		}
 
 		return types.RedisRecord{
-			Key:   input.Key,
-			Type:  input.Type,
-			Value: result,
+			Key:      input.Key,
+			Type:     input.Type,
+			Value:    result,
+			ExpireAt: e,
 		}, nil
 	},
 }

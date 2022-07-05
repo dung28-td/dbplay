@@ -14,13 +14,26 @@ import { REDIS_RECORD_TYPES } from 'constants/index';
 import { every } from "utils/object";
 import Trash from "icons/Trash";
 import { confirm } from "modals/ConfirmModal";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import DateTimeInput from "./DateTimeInput";
+
+const recordTypeSx: Sx = {
+  minWidth: 120
+}
+
+const expireAtSx: Sx = {
+  colorScheme: 'dark',
+  maxWidth: 224
+}
 
 const recordTypes = Object.keys(REDIS_RECORD_TYPES)
 
 const defaultRecord: RedisRecord = {
   key: '',
   type: 'STRING',
-  value: undefined as any
+  value: undefined as any,
+  expireAt: null
 }
 
 const confirmDeleteOpts = {
@@ -83,16 +96,21 @@ export default function RedisRecordEditor({ loading, onSave, ...props }: Props) 
         <AppBar position="relative" elevation={0}>
           <Toolbar>
             <Stack direction='row' flexGrow={1} alignItems='center' spacing={1} mr={2}>
-              <Select
-                size='small'
-                value={newRecord.type}
-                onChange={e => setNewRecord({ type: e.target.value as RedisRecordType })}
-              >
-                {recordTypes.map(type => {
-                  return <MenuItem key={type} value={type}>{type}</MenuItem>
-                })}
-              </Select>
+              <FormControl sx={recordTypeSx}>
+                <InputLabel>Type</InputLabel>
+                <Select
+                  size='small'
+                  value={newRecord.type}
+                  onChange={e => setNewRecord({ type: e.target.value as RedisRecordType })}
+                  label='Type'
+                >
+                  {recordTypes.map(type => {
+                    return <MenuItem key={type} value={type}>{type}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
               <TextField
+                label='Key'
                 size='small'
                 placeholder="E.g. prefix:name"
                 value={newRecord.key}
@@ -101,6 +119,16 @@ export default function RedisRecordEditor({ loading, onSave, ...props }: Props) 
                   setNewRecord({ key: value })
                   setErrors({ key: value ? undefined : 'Key is required' })
                 }}
+              />
+              <DateTimeInput
+                label='Expire at'
+                size='small'
+                sx={expireAtSx}
+                InputLabelProps={{
+                  shrink: true
+                }}
+                value={newRecord.expireAt || ''}
+                onChange={(_e, date) => setNewRecord({ expireAt: date.getTime() })}
               />
             </Stack>
             <Stack direction='row' spacing={1}>

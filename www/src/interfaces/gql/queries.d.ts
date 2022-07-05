@@ -15,7 +15,7 @@ interface Queries {
   }
   REDIS_KEYS: {
     data: {
-      redisKeys: RedisScanResult<Omit<CoreRedisRecordFields, 'value'>>
+      redisKeys: RedisScanResult<Omit<CoreRedisRecordFields, 'value' | 'expireAt'>>
     }
     vars: {
       cursor?: number

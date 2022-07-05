@@ -27,9 +27,10 @@ var RedisRecordTypeEnum = graphql.NewEnum(graphql.EnumConfig{
 })
 
 type RedisRecord struct {
-	Key   string `json:"key"`
-	Type  string `json:"type"`
-	Value any    `json:"value"`
+	Key      string `json:"key"`
+	Type     string `json:"type"`
+	Value    any    `json:"value"`
+	ExpireAt *int64 `json:"expireAt"`
 }
 
 var RedisRecordType = graphql.NewObject(graphql.ObjectConfig{
@@ -43,6 +44,9 @@ var RedisRecordType = graphql.NewObject(graphql.ObjectConfig{
 		},
 		"value": &graphql.Field{
 			Type: scalars.JsonType,
+		},
+		"expireAt": &graphql.Field{
+			Type: graphql.Float,
 		},
 	},
 })

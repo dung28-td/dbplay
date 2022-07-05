@@ -21,7 +21,7 @@ const primaryTextProps = {
 
 interface Props {
   active?: boolean
-  record: Omit<CoreRedisRecordFields, 'value'>
+  record: Omit<CoreRedisRecordFields, 'value' | 'expireAt'>
   input: string
   url: string
   selected: boolean

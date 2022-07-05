@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/go-redis/redis/v9"
 )
@@ -66,6 +67,24 @@ func (c ClientRedis) Get(ctx context.Context, key string) (any, error) {
 	}
 }
 
+func (c ClientRedis) GetWithExpiration(ctx context.Context, key string) (any, *int64, error) {
+	v, err := c.Get(ctx, key)
+	if err != nil {
+		return nil, nil, err
+	}
+	pttl, err := c.Client.PTTL(ctx, key).Result()
+	if err != nil {
+		return v, nil, err
+	}
+
+	if pttl.Milliseconds() == 0 {
+		return v, nil, nil
+	}
+
+	e := pttl.Milliseconds() + time.Now().UnixMilli()
+	return v, &e, nil
+}
+
 func (c ClientRedis) Set(ctx context.Context, t string, k string, v any) error {
 	switch t {
 	case "string":
@@ -108,4 +127,17 @@ func (c ClientRedis) Set(ctx context.Context, t string, k string, v any) error {
 	default:
 		return fmt.Errorf("currently we don't support redis %q type", t)
 	}
+}
+
+func (c ClientRedis) SetWithExpiration(ctx context.Context, t string, k string, v any, e *int64) error {
+	if err := c.Set(ctx, t, k, v); err != nil {
+		return err
+	}
+
+	if e == nil {
+		return nil
+	}
+
+	err := c.Client.PExpireAt(ctx, k, time.UnixMilli(*e)).Err()
+	return err
 }
