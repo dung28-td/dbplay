@@ -22,14 +22,16 @@ var RedisValue = graphql.Field{
 		if err != nil {
 			return nil, err
 		}
-		v, err := client.Get(p.Context, k)
+		v, e, err := client.GetWithExpiration(p.Context, k)
 		if err != nil {
 			return nil, err
 		}
+
 		return types.RedisRecord{
-			Key:   k,
-			Type:  t,
-			Value: v,
+			Key:      k,
+			Type:     t,
+			Value:    v,
+			ExpireAt: e,
 		}, nil
 	},
 }

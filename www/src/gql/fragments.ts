@@ -20,5 +20,6 @@ export const CoreRedisRecordFields = gql`
     key
     type
     value
+    expireAt
   }
 `

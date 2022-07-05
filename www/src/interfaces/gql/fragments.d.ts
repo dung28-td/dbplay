@@ -10,5 +10,6 @@ interface CoreRedisRecordFields {
   key: string
   type: RedisRecordType
   value: JSON
+  expireAt: number | null
   __typename: 'RedisRecord'
 }
