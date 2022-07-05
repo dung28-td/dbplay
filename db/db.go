@@ -8,7 +8,6 @@ import (
 	"github.com/uptrace/bun"
 	"github.com/uptrace/bun/dialect/sqlitedialect"
 	"github.com/uptrace/bun/driver/sqliteshim"
-	"github.com/uptrace/bun/extra/bundebug"
 )
 
 var DB *bun.DB
@@ -20,10 +19,6 @@ func Config() (*sql.DB, error) {
 	}
 
 	DB = bun.NewDB(sqldb, sqlitedialect.New())
-	DB.AddQueryHook(bundebug.NewQueryHook(
-		bundebug.WithVerbose(true),
-		bundebug.FromEnv("BUNDEBUG"),
-	))
 
 	return sqldb, nil
 }
