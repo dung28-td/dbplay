@@ -1,7 +1,11 @@
 export const emptyArray = []
 
-export function uniq<T>(arr: T[]) {
-  return arr.filter((v, i, a) => a.indexOf(v) === i)
+type Predicate<T> = (item: T) => any
+
+const defaultPredicate = <T extends unknown>(item: T) => item
+
+export function uniq<T>(arr: T[], predicate: Predicate<T> = defaultPredicate) {
+  return arr.filter((v, i, a) => a.findIndex(_v => predicate(_v) === predicate(v)) === i)
 }
 
 export function indexes(a: number, b: number) {

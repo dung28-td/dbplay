@@ -22,7 +22,6 @@ const appbarSx: Sx = {
 export default function ConnectionLayout() {
   const { connectionId } = useParams()
   const { loading, data } = useQuery('CONNECTION', {
-    fetchPolicy: 'cache-and-network',
     variables: {
       connectionId: connectionId!
     }

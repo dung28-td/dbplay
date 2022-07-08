@@ -33,6 +33,7 @@ export default function RedisKeys() {
   const [input, setInput] = useReducer((_state: string, input: string) => input, '')
   const [indexes, setIndexes] = useReducer((_state: number[], indexes: number[]) => indexes, [])
   const { loading, data, fetchMore } = useQuery('REDIS_KEYS', {
+    notifyOnNetworkStatusChange: true,
     variables: {
       pattern: input
     }

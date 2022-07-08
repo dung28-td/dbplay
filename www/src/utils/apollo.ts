@@ -5,12 +5,10 @@ export function redisScanPagination<T>(keyArgs: FieldPolicy['keyArgs'] = ['patte
   return {
     keyArgs,
     merge: (existing, incoming) => {
-      if (existing?.cursor === incoming.cursor) return existing
-
       return {
         ...existing,
         ...incoming,
-        keys: uniq([...(existing?.keys || []), ...incoming.keys])
+        keys: uniq([...(existing?.keys || []), ...incoming.keys], o => JSON.stringify(o))
       }
     }
   }
