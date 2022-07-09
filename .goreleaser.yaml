@@ -30,3 +30,10 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+brews:
+  -
+    name: dbplay
+    homepage: https://github.com/dung28-td/dbplay
+    tap:
+      owner: dung28-td
+      name: homebrew-tap
