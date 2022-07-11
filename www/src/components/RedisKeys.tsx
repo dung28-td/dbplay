@@ -6,8 +6,6 @@ import AppBar from "@mui/material/AppBar"
 import Toolbar from "@mui/material/Toolbar"
 import ListItem from "@mui/material/ListItem"
 import ListItemText from "@mui/material/ListItemText"
-import CircularProgress from "@mui/material/CircularProgress"
-import InputAdornment from "@mui/material/InputAdornment"
 import IconButton from "@mui/material/IconButton"
 import Typography from "@mui/material/Typography"
 import useQuery from "hooks/useQuery"
@@ -35,7 +33,8 @@ export default function RedisKeys() {
   const { loading, data, fetchMore } = useQuery('REDIS_KEYS', {
     notifyOnNetworkStatusChange: true,
     variables: {
-      pattern: input
+      pattern: input,
+      count: 250
     }
   })
 
@@ -128,13 +127,6 @@ function DefaultToolbar({ loading, input, setInput }: DefaultToolbarProps) {
         placeholder="E.g. redis:key"
         defaultValue={input}
         onChange={onInputChange}
-        InputProps={{
-          endAdornment: loading && (
-            <InputAdornment position="end">
-              <CircularProgress />
-            </InputAdornment>
-          )
-        }}
       />
       <Box ml={1}>
         <IconButton
