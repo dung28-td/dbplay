@@ -4,6 +4,7 @@ import (
 	"github.com/dung28-td/dbplay/client"
 	"github.com/dung28-td/dbplay/constants"
 	"github.com/dung28-td/dbplay/schema/types"
+	"github.com/dung28-td/dbplay/x"
 	"github.com/graphql-go/graphql"
 )
 
@@ -51,17 +52,11 @@ var RedisKeys = graphql.Field{
 			return nil, err
 		}
 
-		for i := range keys {
-			k := keys[i]
-			if t, err := client.Client.Type(p.Context, k).Result(); err != nil {
-				return nil, err
-			} else {
-				records = append(records, types.RedisRecord{
-					Key:  k,
-					Type: t,
-				})
+		records = x.Map(keys, func(k string) types.RedisRecord {
+			return types.RedisRecord{
+				Key: k,
 			}
-		}
+		})
 
 		return RedisScanResult{
 			Cursor: cursor,

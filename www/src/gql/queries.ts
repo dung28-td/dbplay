@@ -33,7 +33,6 @@ export const REDIS_KEYS = gql`
       cursor
       keys {
         key
-        type
       }
     }
   }

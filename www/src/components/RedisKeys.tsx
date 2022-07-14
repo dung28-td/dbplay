@@ -38,7 +38,7 @@ export default function RedisKeys() {
     }
   })
 
-  const renderItem = useCallback(({ item, selected, onSelect }: RenderItemProps<Omit<CoreRedisRecordFields, 'value' | 'expireAt'>>) => {
+  const renderItem = useCallback(({ item, selected, onSelect }: RenderItemProps<RedisRecordKey>) => {
     const url = '/connections/' + connectionId + '/records/' + item.key
 
     return (
@@ -53,7 +53,7 @@ export default function RedisKeys() {
     )
   }, [connectionId, input])
 
-  const initializer = useCallback((items: Omit<CoreRedisRecordFields, 'value' | 'expireAt'>[]) => {
+  const initializer = useCallback((items: RedisRecordKey[]) => {
     const idx = items.findIndex(({ key }) => {
       const url = `/connections/${connectionId}/records/${key}`
       return pathname === url || pathname.startsWith(url + '/')
@@ -142,7 +142,7 @@ function DefaultToolbar({ loading, input, setInput }: DefaultToolbarProps) {
 }
 
 interface SelectionToolbarProps {
-  selectedRecords: Omit<CoreRedisRecordFields, 'value' | 'expireAt'>[]
+  selectedRecords: RedisRecordKey[]
 }
 
 function SelectionToolbar({ selectedRecords }: SelectionToolbarProps) {

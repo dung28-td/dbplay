@@ -9,3 +9,5 @@ interface RedisRecord {
   value: JSON
   expireAt: number | null
 }
+
+type RedisRecordKey = Pick<RedisRecord, 'key'>
