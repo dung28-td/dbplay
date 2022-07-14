@@ -24,8 +24,10 @@ func NewClient(dsn string) (c Client, err error) {
 	}
 
 	switch u.Scheme {
-	case "redis", "rediss", "unix":
+	case "redis", "rediss":
 		c, err = NewClientRedis(dsn)
+	case "postgres":
+		c, err = NewCLientSQL(dsn)
 	default:
 		c, err = nil, fmt.Errorf("currently, %q connection is not supported", u.Scheme)
 	}

@@ -1,5 +1,7 @@
 import RedisLayout from "components/RedisLayout";
+import Postgres from "icons/Postgres";
 import Redis from "icons/Redis";
+import { Fragment } from "react";
 
 export const CONNECTION_TYPES = {
   redis: {
@@ -9,6 +11,10 @@ export const CONNECTION_TYPES = {
   rediss: {
     Icon: Redis,
     Layout: RedisLayout
+  },
+  postgres: {
+    Icon: Postgres,
+    Layout: Fragment
   }
 }
 
