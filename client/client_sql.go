@@ -5,8 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/uptrace/bun"
-	"github.com/uptrace/bun/dialect/pgdialect"
-	"github.com/uptrace/bun/driver/pgdriver"
+	"github.com/uptrace/bun/extra/bundebug"
 )
 
 type ClientSQL struct {
@@ -14,21 +13,23 @@ type ClientSQL struct {
 	db    *bun.DB
 }
 
-func NewCLientSQL(dsn string) (*ClientSQL, error) {
-	sqldb := sql.OpenDB(pgdriver.NewConnector(pgdriver.WithDSN(dsn)))
-	db := bun.NewDB(sqldb, pgdialect.New())
-
-	return &ClientSQL{
-		sqldb: sqldb,
-		db:    db,
-	}, nil
+type TableSQL struct {
+	Name   string `json:"name"`
+	Schema string `json:"schema"`
 }
 
-func (c ClientSQL) TestConnection(ctx context.Context) error {
+func (c *ClientSQL) Debug() {
+	c.db.AddQueryHook(bundebug.NewQueryHook(
+		bundebug.WithVerbose(true),
+		bundebug.FromEnv("BUNDEBUG"),
+	))
+}
+
+func (c *ClientSQL) TestConnection(ctx context.Context) error {
 	return c.db.Ping()
 }
 
-func (c ClientSQL) Close() error {
+func (c *ClientSQL) Close() error {
 	err := c.db.Close()
 	if err != nil {
 		return err

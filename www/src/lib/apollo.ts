@@ -5,6 +5,9 @@ const clients: {
   [key: string]: ApolloClient<NormalizedCacheObject>
 } = {}
 
+// @ts-ignore
+window.clients = clients
+
 export const generateApolloClient = (connectionId: string = "") => {
   if (!clients[connectionId]) {
      clients[connectionId] = new ApolloClient({
@@ -23,6 +26,9 @@ export const generateApolloClient = (connectionId: string = "") => {
           },
           RedisRecord: {
             keyFields: ["key"]
+          },
+          SQLTable: {
+            keyFields: ["schema", "name"]
           }
         }
       }),

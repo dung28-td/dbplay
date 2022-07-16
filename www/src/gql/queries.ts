@@ -46,3 +46,12 @@ export const REDIS_VALUE = gql`
     }
   }
 `
+
+export const SQL_TABLES = gql`
+  ${fragments.CoreSQLTableFields}
+  query SQLTables {
+    sqlTables {
+      ...CoreSQLTableFields
+    }
+  }
+`

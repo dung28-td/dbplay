@@ -12,5 +12,6 @@ var query = graphql.NewObject(graphql.ObjectConfig{
 		"connection":  &queries.Connection,
 		"redisKeys":   &queries.RedisKeys,
 		"redisValue":  &queries.RedisValue,
+		"sqlTables":   &queries.SQLTables,
 	},
 })

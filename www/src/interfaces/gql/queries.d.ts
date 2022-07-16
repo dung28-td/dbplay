@@ -31,4 +31,10 @@ interface Queries {
       key: string
     }
   }
+  SQL_TABLES: {
+    data: {
+      sqlTables: CoreSQLTableFields[]
+    }
+    vars?: {}
+  }
 }

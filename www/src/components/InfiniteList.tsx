@@ -1,7 +1,6 @@
-import CircularProgress from '@mui/material/CircularProgress'
 import List, { ListProps } from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
 import InView from './InView'
+import ListItemLoading from './ListItemLoading'
 
 interface Props extends ListProps {
   loading?: boolean
@@ -12,7 +11,7 @@ interface Props extends ListProps {
 export default function InfiniteList({
   loading,
   loadMore,
-  LoadingComponent = Loading,
+  LoadingComponent = ListItemLoading,
   children,
   ...props
 }: Props) {
@@ -35,13 +34,5 @@ export default function InfiniteList({
         />
       )}
     </List>
-  )
-}
-
-function Loading() {
-  return (
-    <ListItem sx={{ justifyContent: 'center' }}>
-      <CircularProgress />
-    </ListItem>
   )
 }

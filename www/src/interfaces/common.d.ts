@@ -11,3 +11,8 @@ interface RedisRecord {
 }
 
 type RedisRecordKey = Pick<RedisRecord, 'key'>
+
+interface SQLTable {
+  schema: string
+  name: string
+}

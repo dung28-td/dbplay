@@ -13,3 +13,5 @@ interface CoreRedisRecordFields {
   expireAt: number | null
   __typename: 'RedisRecord'
 }
+
+type CoreSQLTableFields = Pick<SQLTable, 'schema' | 'name'>

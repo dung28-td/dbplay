@@ -11,6 +11,7 @@ var Clients = make(map[string]Client)
 type Client interface {
 	TestConnection(ctx context.Context) error
 	Close() error
+	Tables(ctx context.Context) ([]TableSQL, error)
 }
 
 func NewClient(dsn string) (c Client, err error) {
@@ -27,7 +28,10 @@ func NewClient(dsn string) (c Client, err error) {
 	case "redis", "rediss":
 		c, err = NewClientRedis(dsn)
 	case "postgres":
-		c, err = NewCLientSQL(dsn)
+		if cp, err := NewCLientPostgres(dsn); err == nil {
+			cp.Debug()
+			c = cp
+		}
 	default:
 		c, err = nil, fmt.Errorf("currently, %q connection is not supported", u.Scheme)
 	}
