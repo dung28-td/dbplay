@@ -1,4 +1,4 @@
-import RedisLayout from "components/RedisLayout";
+import RedisLayout from "layouts/RedisLayout";
 import Postgres from "icons/Postgres";
 import Redis from "icons/Redis";
 import { Fragment } from "react";
