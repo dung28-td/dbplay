@@ -16,3 +16,8 @@ interface SQLTable {
   schema: string
   name: string
 }
+
+interface SQLColumn {
+  name: string
+  dataType: string
+}

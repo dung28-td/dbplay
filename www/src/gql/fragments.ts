@@ -30,3 +30,10 @@ export const CoreSQLTableFields = gql`
     name
   }
 `
+
+export const CoreSQLColumnFields = gql`
+  fragment CoreSQLColumnFields on SQLColumn {
+    name
+    dataType
+  }
+`

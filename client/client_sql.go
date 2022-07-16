@@ -14,8 +14,14 @@ type ClientSQL struct {
 }
 
 type TableSQL struct {
-	Name   string `json:"name"`
-	Schema string `json:"schema"`
+	Name    string      `json:"name"`
+	Schema  string      `json:"schema"`
+	Columns []ColumnSQL `json:"columns"`
+}
+
+type ColumnSQL struct {
+	Name     string `json:"name"`
+	DataType string `json:"dataType"`
 }
 
 func (c *ClientSQL) Debug() {

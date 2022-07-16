@@ -143,5 +143,9 @@ func (c *ClientRedis) SetWithExpiration(ctx context.Context, t string, k string,
 }
 
 func (c *ClientRedis) Tables(ctx context.Context) ([]TableSQL, error) {
-	return nil, fmt.Errorf("client Redis does not support tables")
+	return nil, fmt.Errorf("client Redis does not support SQL tables")
+}
+
+func (c *ClientRedis) Columns(ctx context.Context, s string, n string) ([]ColumnSQL, error) {
+	return nil, fmt.Errorf("client Redis does not support SQL columns")
 }

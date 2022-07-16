@@ -12,6 +12,7 @@ type Client interface {
 	TestConnection(ctx context.Context) error
 	Close() error
 	Tables(ctx context.Context) ([]TableSQL, error)
+	Columns(ctx context.Context, schema string, name string) ([]ColumnSQL, error)
 }
 
 func NewClient(dsn string) (c Client, err error) {

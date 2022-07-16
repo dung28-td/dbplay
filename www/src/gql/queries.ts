@@ -55,3 +55,22 @@ export const SQL_TABLES = gql`
     }
   }
 `
+
+export const SQL_TABLE_RECORDS = gql`
+  ${fragments.CoreSQLTableFields}
+  ${fragments.CoreSQLColumnFields}
+  query SQLTableRecords(
+    $schema: String!,
+    $name: String!
+  ) {
+    sqlTable(
+      schema: $schema,
+      name: $name
+    ) {
+      ...CoreSQLTableFields
+      columns {
+        ...CoreSQLColumnFields
+      }
+    }
+  }
+`

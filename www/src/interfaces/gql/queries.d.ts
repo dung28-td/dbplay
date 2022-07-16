@@ -37,4 +37,15 @@ interface Queries {
     }
     vars?: {}
   }
+  SQL_TABLE_RECORDS: {
+    data: {
+      sqlTable: null | (CoreSQLTableFields & {
+        columns: CoreSQLColumnFields[]
+      })
+    }
+    vars: {
+      schema: string,
+      name: string
+    }
+  }
 }
