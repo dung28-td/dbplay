@@ -1,7 +1,7 @@
 import RedisLayout from "layouts/RedisLayout";
+import SQLLayout from "layouts/SQLLayout";
 import Postgres from "icons/Postgres";
 import Redis from "icons/Redis";
-import { Fragment } from "react";
 
 export const CONNECTION_TYPES = {
   redis: {
@@ -14,7 +14,7 @@ export const CONNECTION_TYPES = {
   },
   postgres: {
     Icon: Postgres,
-    Layout: Fragment
+    Layout: SQLLayout
   }
 }
 
