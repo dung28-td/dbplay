@@ -59,9 +59,12 @@ export const SQL_TABLES = gql`
 export const SQL_TABLE_RECORDS = gql`
   ${fragments.CoreSQLTableFields}
   ${fragments.CoreSQLColumnFields}
+  ${fragments.SQLRecordsFields}
   query SQLTableRecords(
     $schema: String!,
-    $name: String!
+    $name: String!,
+    $limit: Int!,
+    $offset: Int!
   ) {
     sqlTable(
       schema: $schema,
@@ -70,6 +73,12 @@ export const SQL_TABLE_RECORDS = gql`
       ...CoreSQLTableFields
       columns {
         ...CoreSQLColumnFields
+      }
+      records(
+        limit: $limit,
+        offset: $offset
+      ) {
+        ...SQLRecordsFields
       }
     }
   }

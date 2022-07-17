@@ -3,6 +3,8 @@ import SQLLayout from "layouts/SQLLayout";
 import Postgres from "icons/Postgres";
 import Redis from "icons/Redis";
 
+export const emptyArray = []
+
 export const CONNECTION_TYPES = {
   redis: {
     Icon: Redis,

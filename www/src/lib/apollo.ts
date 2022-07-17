@@ -1,5 +1,5 @@
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
-import { redisScanPagination } from "utils/apollo";
+import { redisScanPagination, sqlRecordsPagination } from "utils/apollo";
 
 const clients: {
   [key: string]: ApolloClient<NormalizedCacheObject>
@@ -28,7 +28,10 @@ export const generateApolloClient = (connectionId: string = "") => {
             keyFields: ["key"]
           },
           SQLTable: {
-            keyFields: ["schema", "name"]
+            keyFields: ["schema", "name"],
+            fields: {
+              records: sqlRecordsPagination()
+            }
           }
         }
       }),

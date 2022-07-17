@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+
+	"github.com/uptrace/bun"
 )
 
 var Clients = make(map[string]Client)
@@ -13,6 +15,7 @@ type Client interface {
 	Close() error
 	Tables(ctx context.Context) ([]TableSQL, error)
 	Columns(ctx context.Context, schema string, name string) ([]ColumnSQL, error)
+	GetDB() (*bun.DB, error)
 }
 
 func NewClient(dsn string) (c Client, err error) {

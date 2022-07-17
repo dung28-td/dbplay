@@ -5,6 +5,7 @@ import SQLTable from "./SQLTable"
 import ListItemLoading from "./ListItemLoading"
 import { matchPath, useLocation, useParams } from "react-router-dom"
 import { useMemo } from "react"
+import { Box } from "@mui/material"
 
 export default function SQLTables() {
   const { connectionId } = useParams()
@@ -18,24 +19,26 @@ export default function SQLTables() {
   }, [data])
 
   return (
-    <Stack width={320} borderRight={1} borderColor='divider'>
-      <List dense>
-        {sortedTables.map(table => {
-          const key = table.schema + '.' + table.name
-          const url = `/connections/${connectionId}/tables/${key}`
-          const selected = !!matchPath(url, pathname)
+    <Stack width={240} borderRight={1} borderColor='divider'>
+      <Box overflow='auto' flexGrow={1}>
+        <List dense>
+          {sortedTables.map(table => {
+            const key = table.schema + '.' + table.name
+            const url = `/connections/${connectionId}/tables/${key}`
+            const selected = !!matchPath(url, pathname)
 
-          return (
-            <SQLTable
-              key={key}
-              table={table}
-              url={url}
-              selected={selected}
-            />
-          )
-        })}
-        {loading && <ListItemLoading />}
-      </List>
+            return (
+              <SQLTable
+                key={key}
+                table={table}
+                url={url}
+                selected={selected}
+              />
+            )
+          })}
+          {loading && <ListItemLoading />}
+        </List>
+      </Box>
     </Stack>
   )
 }

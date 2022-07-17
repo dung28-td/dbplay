@@ -41,11 +41,14 @@ interface Queries {
     data: {
       sqlTable: null | (CoreSQLTableFields & {
         columns: CoreSQLColumnFields[]
+        records: SQLRecordsFields
       })
     }
     vars: {
       schema: string,
-      name: string
+      name: string,
+      limit: number,
+      offset: number
     }
   }
 }

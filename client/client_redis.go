@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v9"
+	"github.com/uptrace/bun"
 )
 
 type ClientRedis struct {
@@ -148,4 +149,8 @@ func (c *ClientRedis) Tables(ctx context.Context) ([]TableSQL, error) {
 
 func (c *ClientRedis) Columns(ctx context.Context, s string, n string) ([]ColumnSQL, error) {
 	return nil, fmt.Errorf("client Redis does not support SQL columns")
+}
+
+func (c *ClientRedis) GetDB() (*bun.DB, error) {
+	return nil, fmt.Errorf("cannot get bun DB with client Redis")
 }

@@ -37,3 +37,10 @@ export const CoreSQLColumnFields = gql`
     dataType
   }
 `
+
+export const SQLRecordsFields = gql`
+  fragment SQLRecordsFields on SQLRecords {
+    rows
+    rowCount
+  }
+`

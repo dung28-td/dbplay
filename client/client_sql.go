@@ -14,9 +14,10 @@ type ClientSQL struct {
 }
 
 type TableSQL struct {
-	Name    string      `json:"name"`
-	Schema  string      `json:"schema"`
-	Columns []ColumnSQL `json:"columns"`
+	Name    string           `json:"name"`
+	Schema  string           `json:"schema"`
+	Columns []ColumnSQL      `json:"columns"`
+	Records []map[string]any `json:"records"`
 }
 
 type ColumnSQL struct {
@@ -43,4 +44,8 @@ func (c *ClientSQL) Close() error {
 
 	err = c.sqldb.Close()
 	return err
+}
+
+func (c *ClientSQL) GetDB() (*bun.DB, error) {
+	return c.db, nil
 }
