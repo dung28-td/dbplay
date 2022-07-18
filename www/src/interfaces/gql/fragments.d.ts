@@ -13,3 +13,12 @@ interface CoreRedisRecordFields {
   expireAt: number | null
   __typename: 'RedisRecord'
 }
+
+type CoreSQLTableFields = Pick<SQLTable, 'schema' | 'name'>
+
+type CoreSQLColumnFields = Pick<SQLColumn, 'dataType' | 'name'>
+
+interface SQLRecordsFields {
+  rows: Record<string, any>[]
+  rowCount: number
+}

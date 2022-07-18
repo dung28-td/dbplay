@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v9"
+	"github.com/uptrace/bun"
 )
 
 type ClientRedis struct {
@@ -23,16 +24,16 @@ func NewClientRedis(dsn string) (*ClientRedis, error) {
 	}, nil
 }
 
-func (c ClientRedis) TestConnection(ctx context.Context) error {
+func (c *ClientRedis) TestConnection(ctx context.Context) error {
 	_, err := c.Client.Ping(ctx).Result()
 	return err
 }
 
-func (c ClientRedis) Close() error {
+func (c *ClientRedis) Close() error {
 	return c.Client.Close()
 }
 
-func (c ClientRedis) Keys(ctx context.Context, input string) ([]string, error) {
+func (c *ClientRedis) Keys(ctx context.Context, input string) ([]string, error) {
 	var result []string
 	match := input
 	if match != "" {
@@ -45,7 +46,7 @@ func (c ClientRedis) Keys(ctx context.Context, input string) ([]string, error) {
 	return result, iter.Err()
 }
 
-func (c ClientRedis) Get(ctx context.Context, key string) (any, error) {
+func (c *ClientRedis) Get(ctx context.Context, key string) (any, error) {
 	t, err := c.Client.Type(ctx, key).Result()
 	if err != nil {
 		return nil, err
@@ -67,7 +68,7 @@ func (c ClientRedis) Get(ctx context.Context, key string) (any, error) {
 	}
 }
 
-func (c ClientRedis) GetWithExpiration(ctx context.Context, key string) (any, *int64, error) {
+func (c *ClientRedis) GetWithExpiration(ctx context.Context, key string) (any, *int64, error) {
 	v, err := c.Get(ctx, key)
 	if err != nil {
 		return nil, nil, err
@@ -85,7 +86,7 @@ func (c ClientRedis) GetWithExpiration(ctx context.Context, key string) (any, *i
 	return v, &e, nil
 }
 
-func (c ClientRedis) Set(ctx context.Context, t string, k string, v any) error {
+func (c *ClientRedis) Set(ctx context.Context, t string, k string, v any) error {
 	switch t {
 	case "string":
 		return c.Client.Set(ctx, k, v, 0).Err()
@@ -129,7 +130,7 @@ func (c ClientRedis) Set(ctx context.Context, t string, k string, v any) error {
 	}
 }
 
-func (c ClientRedis) SetWithExpiration(ctx context.Context, t string, k string, v any, e *int64) error {
+func (c *ClientRedis) SetWithExpiration(ctx context.Context, t string, k string, v any, e *int64) error {
 	if err := c.Set(ctx, t, k, v); err != nil {
 		return err
 	}
@@ -140,4 +141,16 @@ func (c ClientRedis) SetWithExpiration(ctx context.Context, t string, k string, 
 
 	err := c.Client.PExpireAt(ctx, k, time.UnixMilli(*e)).Err()
 	return err
+}
+
+func (c *ClientRedis) Tables(ctx context.Context) ([]TableSQL, error) {
+	return nil, fmt.Errorf("client Redis does not support SQL tables")
+}
+
+func (c *ClientRedis) Columns(ctx context.Context, s string, n string) ([]ColumnSQL, error) {
+	return nil, fmt.Errorf("client Redis does not support SQL columns")
+}
+
+func (c *ClientRedis) GetDB() (*bun.DB, error) {
+	return nil, fmt.Errorf("cannot get bun DB with client Redis")
 }

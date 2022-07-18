@@ -31,4 +31,25 @@ interface Queries {
       key: string
     }
   }
+  SQL_TABLES: {
+    data: {
+      sqlTables: CoreSQLTableFields[]
+    }
+    vars?: {}
+  }
+  SQL_TABLE_RECORDS: {
+    data: {
+      sqlTable: null | (CoreSQLTableFields & {
+        columns: CoreSQLColumnFields[]
+        records: SQLRecordsFields
+      })
+    }
+    vars: {
+      schema: string,
+      name: string,
+      limit: number,
+      offset: number,
+      where?: string
+    }
+  }
 }

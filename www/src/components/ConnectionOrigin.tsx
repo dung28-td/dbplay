@@ -8,9 +8,16 @@ interface Props {
 export default function ConnectionOrigin({ dsn }: Props) {
   const match = useDSN(dsn)
 
+  if (!match) return null
+
+  const { host, port, db } = match
+
   return (
     <Fragment>
-      {[match?.host, match?.port].filter(Boolean).join(':')}
+      {[
+        [host, port].filter(Boolean).join(':'),
+        db
+      ].filter(Boolean).join('/')}
     </Fragment>
   )
 }

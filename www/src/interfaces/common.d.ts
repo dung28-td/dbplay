@@ -11,3 +11,18 @@ interface RedisRecord {
 }
 
 type RedisRecordKey = Pick<RedisRecord, 'key'>
+
+interface SQLTable {
+  schema: string
+  name: string
+}
+
+interface SQLColumn {
+  name: string
+  dataType: string
+}
+
+interface LimitOffsetPagination {
+  limit: number
+  offset: number
+}

@@ -1,5 +1,9 @@
-import RedisLayout from "components/RedisLayout";
+import RedisLayout from "layouts/RedisLayout";
+import SQLLayout from "layouts/SQLLayout";
+import Postgres from "icons/Postgres";
 import Redis from "icons/Redis";
+
+export const emptyArray = []
 
 export const CONNECTION_TYPES = {
   redis: {
@@ -9,6 +13,10 @@ export const CONNECTION_TYPES = {
   rediss: {
     Icon: Redis,
     Layout: RedisLayout
+  },
+  postgres: {
+    Icon: Postgres,
+    Layout: SQLLayout
   }
 }
 

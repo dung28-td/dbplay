@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"net/url"
+
+	"github.com/uptrace/bun"
 )
 
 var Clients = make(map[string]Client)
@@ -11,6 +13,9 @@ var Clients = make(map[string]Client)
 type Client interface {
 	TestConnection(ctx context.Context) error
 	Close() error
+	Tables(ctx context.Context) ([]TableSQL, error)
+	Columns(ctx context.Context, schema string, name string) ([]ColumnSQL, error)
+	GetDB() (*bun.DB, error)
 }
 
 func NewClient(dsn string) (c Client, err error) {
@@ -24,8 +29,13 @@ func NewClient(dsn string) (c Client, err error) {
 	}
 
 	switch u.Scheme {
-	case "redis", "rediss", "unix":
+	case "redis", "rediss":
 		c, err = NewClientRedis(dsn)
+	case "postgres":
+		if cp, err := NewCLientPostgres(dsn); err == nil {
+			cp.Debug()
+			c = cp
+		}
 	default:
 		c, err = nil, fmt.Errorf("currently, %q connection is not supported", u.Scheme)
 	}

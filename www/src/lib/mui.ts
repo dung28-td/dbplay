@@ -1,10 +1,13 @@
 import { createTheme } from "@mui/material/styles";
+import type {} from '@mui/x-data-grid/themeAugmentation'
 
 declare module '@mui/material/styles' {
   interface TypeBackground {
     monokai: string
   }
 }
+
+const dataGridGetRowId = (row: any) => row.id || JSON.stringify(row)
 
 const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
   palette: {
@@ -17,6 +20,15 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
     }
   },
   components: {
+    MuiDataGrid: {
+      defaultProps: {
+        checkboxSelection: true,
+        disableSelectionOnClick: true,
+        density: 'compact',
+        paginationMode: 'server',
+        getRowId: dataGridGetRowId
+      }
+    },
     MuiCircularProgress: {
       defaultProps: {
         size: 24

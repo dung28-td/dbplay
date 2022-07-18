@@ -15,6 +15,12 @@ const itemSx: Sx = {
   }
 }
 
+const secondTypoProps = {
+  sx: {
+    overflowWrap: 'break-word'
+  }
+}
+
 const iconSx: Sx = {
   minWidth: 40
 }
@@ -62,6 +68,7 @@ export default function Connection({ connection }: Props) {
         <ListItemText
           primary={name}
           secondary={<ConnectionOrigin dsn={dsn} />}
+          secondaryTypographyProps={secondTypoProps}
         />
       </ListItemButton>
     </ListItem>

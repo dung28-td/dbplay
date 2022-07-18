@@ -46,3 +46,42 @@ export const REDIS_VALUE = gql`
     }
   }
 `
+
+export const SQL_TABLES = gql`
+  ${fragments.CoreSQLTableFields}
+  query SQLTables {
+    sqlTables {
+      ...CoreSQLTableFields
+    }
+  }
+`
+
+export const SQL_TABLE_RECORDS = gql`
+  ${fragments.CoreSQLTableFields}
+  ${fragments.CoreSQLColumnFields}
+  ${fragments.SQLRecordsFields}
+  query SQLTableRecords(
+    $schema: String!,
+    $name: String!,
+    $limit: Int!,
+    $offset: Int!,
+    $where: String
+  ) {
+    sqlTable(
+      schema: $schema,
+      name: $name
+    ) {
+      ...CoreSQLTableFields
+      columns {
+        ...CoreSQLColumnFields
+      }
+      records(
+        limit: $limit,
+        offset: $offset,
+        where: $where
+      ) {
+        ...SQLRecordsFields
+      }
+    }
+  }
+`

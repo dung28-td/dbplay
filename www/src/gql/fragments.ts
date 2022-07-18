@@ -23,3 +23,24 @@ export const CoreRedisRecordFields = gql`
     expireAt
   }
 `
+
+export const CoreSQLTableFields = gql`
+  fragment CoreSQLTableFields on SQLTable {
+    schema
+    name
+  }
+`
+
+export const CoreSQLColumnFields = gql`
+  fragment CoreSQLColumnFields on SQLColumn {
+    name
+    dataType
+  }
+`
+
+export const SQLRecordsFields = gql`
+  fragment SQLRecordsFields on SQLRecords {
+    rows
+    rowCount
+  }
+`
