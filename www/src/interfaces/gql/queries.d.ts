@@ -48,7 +48,8 @@ interface Queries {
       schema: string,
       name: string,
       limit: number,
-      offset: number
+      offset: number,
+      where?: string
     }
   }
 }

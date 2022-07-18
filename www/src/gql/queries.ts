@@ -64,7 +64,8 @@ export const SQL_TABLE_RECORDS = gql`
     $schema: String!,
     $name: String!,
     $limit: Int!,
-    $offset: Int!
+    $offset: Int!,
+    $where: String
   ) {
     sqlTable(
       schema: $schema,
@@ -76,7 +77,8 @@ export const SQL_TABLE_RECORDS = gql`
       }
       records(
         limit: $limit,
-        offset: $offset
+        offset: $offset,
+        where: $where
       ) {
         ...SQLRecordsFields
       }

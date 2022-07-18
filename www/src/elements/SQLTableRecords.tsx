@@ -6,6 +6,8 @@ import Stack from "@mui/material/Stack"
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { emptyArray } from "constants/index"
 import { flexByType } from "utils/data-grid"
+import SQLTableToolbar from "components/SQLTableToolbar"
+import useSearchParams from "hooks/useSearchParams"
 
 export default function SQLTableRecords() {
   const [pagination, setPagination] = useState({
@@ -13,21 +15,32 @@ export default function SQLTableRecords() {
     offset: 0
   })
   const { table } = useParams()
+  const [sp, setSp] = useSearchParams()
   const [schema, name] = (table || '').split('.')
   const { loading, data, fetchMore } = useQuery('SQL_TABLE_RECORDS', {
     variables: {
       ...pagination,
       schema,
       name,
+      where: sp.get('where') || ''
     }
   })
 
-  const loadMore = useCallback(async (limit: number, offset: number) => {
-    setPagination({ limit, offset })
+  const loadMore = useCallback(async (pagination: LimitOffsetPagination) => {
+    setPagination(pagination)
     await fetchMore({
-      variables: { limit, offset }
+      variables: pagination
     })
   }, [fetchMore])
+
+  const handleSearch = useCallback((value: string) => {
+    setPagination(prev => ({ ...prev, offset: 0 }))
+    setSp(sp => {
+      if (!value) sp.delete('where')
+      else sp.set('where', value)
+      return sp
+    })
+  }, [setSp, setPagination])
 
   if (!data && loading) return (
     <Stack height={1} justifyContent='center' alignItems='center'>
@@ -38,18 +51,27 @@ export default function SQLTableRecords() {
   if (!data?.sqlTable?.columns.length) return null
 
   return (
-    <Data
-      cols={data.sqlTable.columns}
-      records={data.sqlTable.records}
-      loadMore={loadMore}
-    />
+    <Stack height={1}>
+      <SQLTableToolbar
+        table={data.sqlTable}
+        searchInput={sp.get('where') || ''}
+        onSearch={handleSearch}
+      />
+      <Data
+        cols={data.sqlTable.columns}
+        records={data.sqlTable.records}
+        pagination={pagination}
+        loadMore={loadMore}
+      />
+    </Stack>
   )
 }
 
 interface DataProps {
   cols: CoreSQLColumnFields[]
   records: SQLRecordsFields
-  loadMore: (limit: number, offset: number) => void
+  pagination: LimitOffsetPagination
+  loadMore: (pagination: LimitOffsetPagination) => void
 }
 
 const sx: Sx = {
@@ -57,7 +79,8 @@ const sx: Sx = {
   borderRadius: 'unset'
 }
 
-function Data({ cols, records, loadMore }: DataProps) {
+function Data({ cols, records, pagination, loadMore }: DataProps) {
+  const { limit, offset } = pagination
   const columns = useMemo(() => {
     return cols.map(({ name, dataType }) => {
       const col: GridColDef = {
@@ -75,8 +98,16 @@ function Data({ cols, records, loadMore }: DataProps) {
       columns={columns}
       rows={records.rows || emptyArray}
       rowCount={records.rowCount}
-      onPageChange={page => loadMore(100, page * 100)}
-      onPageSizeChange={limit => loadMore(limit, 0)}
+      page={offset / limit}
+      pageSize={limit}
+      onPageChange={page => loadMore({
+        limit,
+        offset: page * limit
+      })}
+      onPageSizeChange={limit => loadMore({
+        limit,
+        offset: 0
+      })}
     />
   )
 }

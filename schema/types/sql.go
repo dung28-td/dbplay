@@ -34,15 +34,25 @@ var SQLTableType = graphql.NewObject(graphql.ObjectConfig{
 				"offset": &graphql.ArgumentConfig{
 					Type: graphql.NewNonNull(graphql.Int),
 				},
+				"where": &graphql.ArgumentConfig{
+					Type:         graphql.String,
+					DefaultValue: "",
+				},
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				src := p.Source.(client.TableSQL)
 				connection := p.Context.Value(constants.CurrentConnectionContextKey).(*Connection)
 				db, _ := connection.Client.GetDB()
 
+				builder := db.NewSelect().Table(src.Schema + "." + src.Name)
+				where := p.Args["where"].(string)
+
+				if where != "" {
+					builder = builder.Where(where)
+				}
+
 				var r []map[string]any
-				count, err := db.NewSelect().
-					Table(src.Schema+"."+src.Name).
+				count, err := builder.
 					Limit(p.Args["limit"].(int)).
 					Offset(p.Args["offset"].(int)).
 					ScanAndCount(p.Context, &r)

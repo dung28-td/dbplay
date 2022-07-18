@@ -30,7 +30,7 @@ export const generateApolloClient = (connectionId: string = "") => {
           SQLTable: {
             keyFields: ["schema", "name"],
             fields: {
-              records: sqlRecordsPagination()
+              records: sqlRecordsPagination(["where"])
             }
           }
         }

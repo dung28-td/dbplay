@@ -21,3 +21,8 @@ interface SQLColumn {
   name: string
   dataType: string
 }
+
+interface LimitOffsetPagination {
+  limit: number
+  offset: number
+}
