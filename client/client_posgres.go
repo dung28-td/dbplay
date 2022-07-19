@@ -41,6 +41,8 @@ func (c *ClientPostgres) Tables(ctx context.Context) ([]TableSQL, error) {
 		return nil, err
 	}
 
+	x.ParseSQL(t)
+
 	// t's attributes
 	//
 	// hasindexes: true
@@ -60,8 +62,8 @@ func (c *ClientPostgres) Tables(ctx context.Context) ([]TableSQL, error) {
 	var r []TableSQL
 	for _, v := range tp {
 		r = append(r, TableSQL{
-			Name:   x.Atob(v.Name),
-			Schema: x.Atob(v.Schema),
+			Name:   v.Name,
+			Schema: v.Schema,
 		})
 	}
 
@@ -82,6 +84,8 @@ func (c *ClientPostgres) Columns(ctx context.Context, s string, n string) ([]Col
 		Scan(ctx, &cols); err != nil {
 		return nil, err
 	}
+
+	x.ParseSQL(cols)
 
 	// col's attributes
 	//
@@ -138,7 +142,7 @@ func (c *ClientPostgres) Columns(ctx context.Context, s string, n string) ([]Col
 	var r []ColumnSQL
 	for _, v := range cp {
 		r = append(r, ColumnSQL{
-			Name:     x.Atob(v.Name),
+			Name:     v.Name,
 			DataType: v.DataType,
 		})
 	}

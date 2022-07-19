@@ -4,6 +4,7 @@ import (
 	"github.com/dung28-td/dbplay/client"
 	"github.com/dung28-td/dbplay/constants"
 	"github.com/dung28-td/dbplay/schema/scalars"
+	"github.com/dung28-td/dbplay/x"
 	"github.com/graphql-go/graphql"
 )
 
@@ -60,6 +61,9 @@ var SQLTableType = graphql.NewObject(graphql.ObjectConfig{
 				if err != nil {
 					return nil, err
 				}
+
+				x.ParseSQL(r)
+
 				return SQLRecords{
 					Rows:     r,
 					RowCount: count,
