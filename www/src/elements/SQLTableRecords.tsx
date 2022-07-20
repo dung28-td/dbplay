@@ -8,6 +8,8 @@ import { emptyArray } from "constants/index"
 import { flexByType } from "utils/data-grid"
 import SQLTableToolbar from "components/SQLTableToolbar"
 import useSearchParams from "hooks/useSearchParams"
+import SQLRecordRow from "components/SQLRecordRow"
+import SQLTableContext from "contexts/SQLTableContext"
 
 export default function SQLTableRecords() {
   const [pagination, setPagination] = useState({
@@ -57,12 +59,14 @@ export default function SQLTableRecords() {
         searchInput={sp.get('where') || ''}
         onSearch={handleSearch}
       />
-      <Data
-        cols={data.sqlTable.columns}
-        records={data.sqlTable.records}
-        pagination={pagination}
-        loadMore={loadMore}
-      />
+      <SQLTableContext.Provider value={data.sqlTable}>
+        <Data
+          cols={data.sqlTable.columns}
+          records={data.sqlTable.records}
+          pagination={pagination}
+          loadMore={loadMore}
+        />
+      </SQLTableContext.Provider>
     </Stack>
   )
 }
@@ -77,6 +81,10 @@ interface DataProps {
 const sx: Sx = {
   border: 'none',
   borderRadius: 'unset'
+}
+
+const components = {
+  Row: SQLRecordRow
 }
 
 function Data({ cols, records, pagination, loadMore }: DataProps) {
@@ -108,6 +116,7 @@ function Data({ cols, records, pagination, loadMore }: DataProps) {
         limit,
         offset: 0
       })}
+      components={components}
     />
   )
 }

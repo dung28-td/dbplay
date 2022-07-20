@@ -16,9 +16,7 @@ const itemSx: Sx = {
 }
 
 const secondTypoProps = {
-  sx: {
-    overflowWrap: 'break-word'
-  }
+  noWrap: true
 }
 
 const iconSx: Sx = {
