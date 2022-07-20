@@ -27,11 +27,13 @@ interface Props {
 }
 
 export default function SQLTableToolbar({ table, searchInput, onSearch }: Props) {
+  const { schema, name } = table
+
   return (
     <Toolbar sx={toolbarSx}>
       <Box flexGrow={1}>
         <Typography variant="h6" component='div'>
-          {table.name}
+          {`${schema}.${name}`}
         </Typography>
       </Box>
       <Search

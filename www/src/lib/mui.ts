@@ -22,6 +22,7 @@ const createMuiTheme = (mode: 'light' | 'dark') => createTheme({
   components: {
     MuiDataGrid: {
       defaultProps: {
+        disableVirtualization: true,
         checkboxSelection: true,
         disableSelectionOnClick: true,
         density: 'compact',

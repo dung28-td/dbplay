@@ -16,6 +16,7 @@ export interface AceEditorProps {
   theme?: string
   onSave?: (editor: Ace.Editor, args?: any) => void
   onChange?: (session: Ace.EditSession) => void
+  editorOptions?: Partial<Ace.EditorOptions>
 }
 
 export const AceEditor = forwardRef<Ace.Editor, AceEditorProps>(({
@@ -23,6 +24,7 @@ export const AceEditor = forwardRef<Ace.Editor, AceEditorProps>(({
   mode,
   onSave,
   onChange,
+  editorOptions,
   theme = 'monokai'
 }, forwardedEditorRef) => {
   const ref = useRef<HTMLDivElement>(null)
@@ -36,7 +38,8 @@ export const AceEditor = forwardRef<Ace.Editor, AceEditorProps>(({
       useWorker: false,
       mode: mode ? `ace/mode/${mode}` : undefined,
       theme: theme ? `ace/theme/${theme}` : undefined,
-      wrap: 'free'
+      wrap: 'free',
+      ...editorOptions
     })
 
     if (typeof forwardedEditorRef === 'function') {
@@ -44,7 +47,7 @@ export const AceEditor = forwardRef<Ace.Editor, AceEditorProps>(({
     } else if (forwardedEditorRef?.current) {
       forwardedEditorRef.current = editorRef.current
     }
-  }, [forwardedEditorRef, mode, theme, value])
+  }, [forwardedEditorRef, mode, theme, value, editorOptions])
 
   useEffect(() => {
     if (!onSave) return

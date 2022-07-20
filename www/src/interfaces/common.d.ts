@@ -15,6 +15,7 @@ type RedisRecordKey = Pick<RedisRecord, 'key'>
 interface SQLTable {
   schema: string
   name: string
+  columns: SQLColumn[]
 }
 
 interface SQLColumn {
