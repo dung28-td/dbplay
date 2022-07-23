@@ -16,6 +16,7 @@ export interface AceEditorProps {
   theme?: string
   onSave?: (editor: Ace.Editor, args?: any) => void
   onChange?: (session: Ace.EditSession) => void
+  onSelect?: (selection: Ace.Selection, editor: Ace.Editor) => void
   editorOptions?: Partial<Ace.EditorOptions>
 }
 
@@ -24,6 +25,7 @@ export const AceEditor = forwardRef<Ace.Editor, AceEditorProps>(({
   mode,
   onSave,
   onChange,
+  onSelect,
   editorOptions,
   theme = 'monokai'
 }, forwardedEditorRef) => {
@@ -68,6 +70,13 @@ export const AceEditor = forwardRef<Ace.Editor, AceEditorProps>(({
     editorRef.current.session.on('change', hdr)
     return () => editorRef.current?.session.off('change', hdr)
   }, [onChange])
+
+  useEffect(() => {
+    if (!onSelect || !editorRef.current) return
+    const hdr = () => onSelect(editorRef.current!.selection, editorRef.current!)
+    editorRef.current.selection.on('changeSelection', hdr)
+    return () => editorRef.current?.selection.off('changeSelection', hdr)
+  }, [onSelect])
 
   return <Box ref={ref} width={1} height={1} />
 })

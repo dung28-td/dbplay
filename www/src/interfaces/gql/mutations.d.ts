@@ -35,4 +35,12 @@ interface Mutations {
       keys: string[]
     }
   }
+  EXEC_SQL_QUERY: {
+    data: {
+      execSQLQuery: Record<string, any>[] | null
+    }
+    vars: {
+      query: string
+    }
+  }
 }

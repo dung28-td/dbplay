@@ -39,3 +39,9 @@ export const DELETE_REDIS_RECORDS = gql`
     deleteRedisRecords(keys: $keys)
   }
 `
+
+export const EXEC_SQL_QUERY = gql`
+  mutation ExecSQLQuery($query: String!) {
+    execSQLQuery(query: $query)
+  }
+`

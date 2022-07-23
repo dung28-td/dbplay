@@ -34,6 +34,10 @@ const routes: RoutePropsWithoutElement[] = [
       {
         path: 'tables/:table',
         Component: lazy(() => import('elements/SQLTableRecords'))
+      },
+      {
+        path: 'scripts',
+        Component: lazy(() => import('elements/SQLScripts'))
       }
     ]
   }
